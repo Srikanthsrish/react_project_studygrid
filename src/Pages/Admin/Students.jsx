@@ -69,7 +69,7 @@ const Students = () => {
   // View Student Details
   const viewStudent = (student) => {
     alert(
-      `Student Details:\nName: ${student.fullName}\nRoll No: ${student.rollNo}\nClass: ${student.class}\nAchievements: ${student.achievements}`
+      "enter best "
     );
   };
 

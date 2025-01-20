@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const StudentTimetable = () => {
+const Timetable = () => {
   const [timetable, setTimetable] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -160,4 +160,4 @@ const styles = {
   },
 };
 
-export default StudentTimetable;
+export default Timetable;

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 
 const Complains = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("Student"); // Default to 'Student' complaints
   const [complains, setComplains] = useState([]);
 
-  // Fetch Complaints from API
-  const fetchComplains = async () => {
+  // Fetch Complaints based on category (Student or Teacher)
+  const fetchComplains = async (category) => {
     try {
-      const response = await fetch("http://localhost:3003/complains");
+      const response = await fetch(`http://localhost:3003/complains?category=${category}`);
       const data = await response.json();
       setComplains(data);
     } catch (error) {
@@ -16,72 +15,40 @@ const Complains = () => {
     }
   };
 
+  // Fetch complaints when the component mounts or category changes
   useEffect(() => {
-    fetchComplains();
-  }, []);
-
-  // Handle Form Submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("http://localhost:3003/complains", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ title, description }),
-      });
-      const result = await response.json();
-      console.log(result);
-      fetchComplains(); // Refresh complaints after adding a new one
-      setTitle("");
-      setDescription("");
-    } catch (error) {
-      console.error("Error adding complaint:", error.message);
-    }
-  };
+    fetchComplains(category);
+  }, [category]);
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
       <h1>Admin Complaints</h1>
 
-      {/* Complaint Form */}
-      <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Title:</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            style={{ marginLeft: "10px", padding: "5px", width: "300px" }}
-            required
-          />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Description:</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            style={{ marginLeft: "10px", padding: "5px", width: "300px", height: "100px" }}
-            required
-          ></textarea>
-        </div>
-        <button type="submit" style={{ padding: "10px 20px", background: "blue", color: "white", border: "none", cursor: "pointer" }}>
-          Add Complaint
-        </button>
-      </form>
+      {/* Category Selection Dropdown */}
+      <div style={{ marginBottom: "20px" }}>
+        <label>Select Category:</label>
+        <select onChange={(e) => setCategory(e.target.value)} value={category}>
+          <option value="Student">Student Complaints</option>
+          <option value="Teacher">Teacher Complaints</option>
+        </select>
+      </div>
 
       {/* Display Complaints */}
-      <h2>All Complaints</h2>
-      <ul>
-        {complains.map((complain) => (
-          <li key={complain.id} style={{ marginBottom: "10px" }}>
-            <strong>{complain.title}:</strong> {complain.description}
-          </li>
-        ))}
-      </ul>
+      <h2>{category} Complaints</h2>
+      {complains.length > 0 ? (
+        <ul>
+          {complains.map((complain) => (
+            <li key={complain.id} style={{ marginBottom: "10px" }}>
+              <strong>{complain.title}:</strong> {complain.description}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No complaints found for {category}.</p>
+      )}
     </div>
   );
 };
 
 export default Complains;
+

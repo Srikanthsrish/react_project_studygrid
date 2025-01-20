@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const StudentProfile = () => {
+const Profile = () => {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -115,4 +115,4 @@ const styles = {
   },
 };
 
-export default StudentProfile;
+export default Profile;

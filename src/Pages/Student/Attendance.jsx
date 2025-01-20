@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const StudentAttendance = () => {
+const Attendance = () => {
   const [attendanceData, setAttendanceData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -89,4 +89,4 @@ const styles = {
   },
 };
 
-export default StudentAttendance;
+export default Attendance;
