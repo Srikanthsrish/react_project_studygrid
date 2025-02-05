@@ -11,7 +11,7 @@ const Teacherhome = () => {
   const [notices, setNotices] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/notices')
+    axios.get('https://studygrid-backendmongo.onrender.com/api/notices')
       .then(response => {
         // Filter out notices that aren't for teachers
         const teacherNotices = response.data.filter(notice => notice.audience === 'teachers');
@@ -25,7 +25,7 @@ const Teacherhome = () => {
 
   // Fetch data from the backend
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/teacher-timetable?teacherId=${teacherId}`)
+    axios.get(`https://studygrid-backendmongo.onrender.com/api/teacher-timetable?teacherId=${teacherId}`)
       .then((response) => {
         setData(response.data);
         setLoading(false);

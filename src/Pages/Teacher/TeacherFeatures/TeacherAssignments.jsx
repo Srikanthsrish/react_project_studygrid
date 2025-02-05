@@ -11,31 +11,14 @@ const TeacherAssignments = () => {
   const [assignmentData, setAssignmentData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [formVisible, setFormVisible] = useState(false); // State to toggle form visibility
+  const [formVisible, setFormVisible] = useState(false);
 
   const [form] = Form.useForm();
 
-  const handleSubmit = async (values) => {
-    const { className, subject, assignment } = values;
-
-    try {
-      const response = await axios.post(
-        `http://localhost:5000/teacherassignments/${teacherId}`,
-        { class: className, subject, assignment }
-      );
-      toast.success(response.data.message);
-      fetchAssignments();
-      form.resetFields();
-      setFormVisible(false); // Hide form after submission
-    } catch (error) {
-      toast.error('Error adding assignment');
-      console.error('Error:', error);
-    }
-  };
-
+  // Fetch assignments from the backend
   const fetchAssignments = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/teacherassignments/${teacherId}`);
+      const response = await axios.get(`https://studygrid-backendmongo.onrender.com/teachers/assignments/${teacherId}`);
       setAssignmentData(response.data.data);
       setLoading(false);
     } catch (err) {
@@ -44,19 +27,38 @@ const TeacherAssignments = () => {
     }
   };
 
+  // Submit a new assignment to the backend
+  const handleSubmit = async (values) => {
+    try {
+      // Destructuring className from values to ensure it's passed correctly as `class`
+      const { className, subject, assignment } = values;
+      const response = await axios.post(
+        `https://studygrid-backendmongo.onrender.com/teachers/assignments/${teacherId}`,
+        { class: className, subject, assignment } // Posting 'class' instead of 'className'
+      );
+      toast.success(response.data.message);
+      fetchAssignments();
+      form.resetFields();
+      setFormVisible(false);
+    } catch (error) {
+      toast.error('Error adding assignment');
+    }
+  };
+
+  // Delete an assignment
   const handleDelete = async (assignmentId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/teacherassignments/${teacherId}/${assignmentId}`
+        `https://studygrid-backendmongo.onrender.com/teachers/assignments/${teacherId}/${assignmentId}`
       );
       toast.success(response.data.message);
       fetchAssignments();
     } catch (error) {
       toast.error('Error deleting assignment');
-      console.error('Error deleting assignment:', error);
     }
   };
 
+  // Effect to fetch assignments when the component mounts
   useEffect(() => {
     fetchAssignments();
   }, [teacherId]);
@@ -70,7 +72,6 @@ const TeacherAssignments = () => {
   }
 
   const columns = [
-    { title: 'Id', dataIndex: 'id', key: 'id', sorter: (a, b) => a.id - b.id },
     { title: 'Class', dataIndex: 'class', key: 'class' },
     { title: 'Subject', dataIndex: 'subject', key: 'subject' },
     { title: 'Assignment', dataIndex: 'assignment', key: 'assignment' },
@@ -78,7 +79,7 @@ const TeacherAssignments = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Button danger onClick={() => handleDelete(record.id)}>
+        <Button danger onClick={() => handleDelete(record._id)}>
           Delete
         </Button>
       ),
@@ -92,46 +93,28 @@ const TeacherAssignments = () => {
         <Button
           type="primary"
           style={{ marginBottom: '10px', backgroundColor: '#2C3E50' }}
-          onClick={() => setFormVisible(true)} // Open modal form on click
+          onClick={() => setFormVisible(true)}
         >
           Add Assignment
         </Button>
 
-        {/* Modal for Add Assignment */}
         <Modal
           title="Add Assignment"
           visible={formVisible}
-          onCancel={() => setFormVisible(false)} // Close modal on cancel
-          footer={null} // Custom footer (No default buttons)
+          onCancel={() => setFormVisible(false)}
+          footer={null}
           width={600}
         >
-          <Form
-            form={form}
-            name="assignment-form"
-            onFinish={handleSubmit}
-            style={{ maxWidth: 600 }}
-          >
-            <Form.Item
-              name="className"
-              label="Class"
-              rules={[{ required: true, message: 'Class is required!' }]}
-            >
+          <Form form={form} name="assignment-form" onFinish={handleSubmit}>
+            <Form.Item name="className" label="Class" rules={[{ required: true, message: 'Class is required!' }]}>
               <Input placeholder="Enter class name" />
             </Form.Item>
 
-            <Form.Item
-              name="subject"
-              label="Subject"
-              rules={[{ required: true, message: 'Subject is required!' }]}
-            >
+            <Form.Item name="subject" label="Subject" rules={[{ required: true, message: 'Subject is required!' }]}>
               <Input placeholder="Enter subject" />
             </Form.Item>
 
-            <Form.Item
-              name="assignment"
-              label="Assignment"
-              rules={[{ required: true, message: 'Assignment details are required!' }]}
-            >
+            <Form.Item name="assignment" label="Assignment" rules={[{ required: true, message: 'Assignment details are required!' }]}>
               <Input.TextArea placeholder="Enter assignment details" rows={4} />
             </Form.Item>
 
@@ -139,10 +122,7 @@ const TeacherAssignments = () => {
               <Button type="primary" htmlType="submit" style={{ backgroundColor: '#2C3E50' }}>
                 Add Assignment
               </Button>
-              <Button
-                style={{ marginLeft: '10px' }}
-                onClick={() => setFormVisible(false)} // Close modal on cancel
-              >
+              <Button style={{ marginLeft: '10px' }} onClick={() => setFormVisible(false)}>
                 Cancel
               </Button>
             </Form.Item>
@@ -151,14 +131,7 @@ const TeacherAssignments = () => {
       </div>
 
       <div style={{ marginTop: '20px' }}>
-        <Table
-          columns={columns}
-          dataSource={assignmentData}
-          rowKey="id"
-          pagination={{ pageSize: 5 }}
-          bordered
-          style={{ backgroundColor: '#EAF2F8' }}
-        />
+        <Table columns={columns} dataSource={assignmentData} rowKey="_id" pagination={{ pageSize: 5 }} bordered />
       </div>
 
       <ToastContainer />
@@ -167,11 +140,6 @@ const TeacherAssignments = () => {
 };
 
 export default TeacherAssignments;
-
-
-
-
-
 
 
 

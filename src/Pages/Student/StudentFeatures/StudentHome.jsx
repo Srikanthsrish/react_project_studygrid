@@ -83,7 +83,7 @@ const StudentHome = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/notices')
+    axios.get('https://studygrid-backendmongo.onrender.com/api/notices')
       .then(response => {
         // Filter out notices that are for students
         const studentNotices = response.data.filter(notice => notice.audience === 'students');
@@ -97,7 +97,7 @@ const StudentHome = () => {
 
   useEffect(() => {
     // Fetch the assignment count
-    axios.get(`http://localhost:5000/api/assignment-count/${className}`)
+    axios.get(`https://studygrid-backendmongo.onrender.com/api/assignment-count/${className}`)
       .then((response) => {
         setAssignmentCount(response.data.assignment_count);
       })
@@ -106,7 +106,7 @@ const StudentHome = () => {
       });
 
     // Fetch the subject count
-    axios.get(`http://localhost:5000/api/subject-count/${className}`)
+    axios.get(`https://studygrid-backendmongo.onrender.com/api/subject-count/${className}`)
       .then((response) => {
         setSubjectCount(response.data.subject_count);
       })

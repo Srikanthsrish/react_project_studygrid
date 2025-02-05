@@ -15,7 +15,7 @@ const TeacherSubjectAllocation = () => {
   const fetchAllocations = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/teacher_subject_allocation");
+      const response = await axios.get("https://studygrid-backendmongo.onrender.com/api/teacher_subject_allocation");
       setAllocations(response.data);
     } catch (error) {
       console.error("Error fetching allocations", error);
@@ -28,7 +28,7 @@ const TeacherSubjectAllocation = () => {
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/teacher_subject_allocation", values, {
+      const response = await axios.post("https://studygrid-backendmongo.onrender.com/api/teacher_subject_allocation", values, {
         headers: { "Content-Type": "application/json" },
       });
 
@@ -51,7 +51,7 @@ const TeacherSubjectAllocation = () => {
       onOk: async () => {
         setLoading(true);
         try {
-          await axios.delete(`http://localhost:5000/api/teacher_subject_allocation/${teacher_id}`);
+          await axios.delete(`https://studygrid-backendmongo.onrender.com/api/teacher_subject_allocation/${teacher_id}`);
           message.success("Allocation deleted successfully.");
           fetchAllocations();
         } catch (error) {

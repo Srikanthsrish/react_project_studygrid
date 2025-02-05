@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Tag, message, Spin, Modal, Form, Input } from 'antd';
-import { PlusOutlined, CheckCircleOutlined, CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
+import { Table, Button, Tag, message, Spin } from 'antd';
+import { CheckCircleOutlined, CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import 'antd/dist/reset.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,8 +10,6 @@ import 'react-toastify/dist/ReactToastify.css';
 const AdminComplaints = () => {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false); // Modal visibility state
-  const [form] = Form.useForm(); // Form instance for handling form data
 
   useEffect(() => {
     fetchComplaints();
@@ -20,7 +18,7 @@ const AdminComplaints = () => {
   const fetchComplaints = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/complains');
+      const response = await axios.get('https://studygrid-backendmongo.onrender.com/complains');
       setComplaints(response.data);
     } catch (error) {
       message.error('Failed to fetch complaints');
@@ -29,9 +27,9 @@ const AdminComplaints = () => {
     }
   };
 
-  const handleStatusChange = async (id, newStatus) => {
+  const handleStatusChange = async (_id, newStatus) => {
     try {
-      await axios.put(`http://localhost:5000/complains/${id}/status`, { status: newStatus });
+      await axios.put(`https://studygrid-backendmongo.onrender.com/complains/${_id}/status`, { status: newStatus });
       toast.success(`Complaint status updated to ${newStatus}`);
       fetchComplaints();
     } catch (error) {
@@ -39,22 +37,11 @@ const AdminComplaints = () => {
     }
   };
 
-  const handleAddComplaint = async (values) => {
-    try {
-      await axios.post('http://localhost:5000/complains', values);
-      toast.success('Complaint added successfully');
-      fetchComplaints();
-      setIsModalVisible(false); // Close the modal after submitting the form
-    } catch (error) {
-      toast.error('Failed to add complaint');
-    }
-  };
-
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: 'Complaint ID',
+      dataIndex: '_id', // Use _id field as identifier
+      key: '_id',
     },
     {
       title: 'Teacher ID',
@@ -103,7 +90,7 @@ const AdminComplaints = () => {
             <Button
               type="primary"
               icon={<CheckCircleOutlined />}
-              onClick={() => handleStatusChange(record.id, 'resolved')}
+              onClick={() => handleStatusChange(record._id, 'resolved')} // Use _id for status change
               style={{ marginRight: '10px', backgroundColor: '#27AE60', border: 'none' }}
             >
               Resolve
@@ -112,7 +99,7 @@ const AdminComplaints = () => {
               type="primary"
               danger
               icon={<CloseCircleOutlined />}
-              onClick={() => handleStatusChange(record.id, 'rejected')}
+              onClick={() => handleStatusChange(record._id, 'rejected')} // Use _id for status change
             >
               Reject
             </Button>
@@ -127,16 +114,6 @@ const AdminComplaints = () => {
       <h1 style={{ textAlign: 'center', color: '#2C3E50' }}>Complaint Management</h1>
       <ToastContainer position="top-right" autoClose={3000} />
 
-      {/* Add New Complaint Button */}
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={() => setIsModalVisible(true)}
-        style={{ backgroundColor: '#2C3E50', marginBottom: '20px' }}
-      >
-        Add Complaint
-      </Button>
-
       {loading ? (
         <div style={{ textAlign: 'center', margin: '20px' }}>
           <Spin indicator={<LoadingOutlined style={{ fontSize: 24, color: '#2C3E50' }} spin />} />
@@ -145,71 +122,14 @@ const AdminComplaints = () => {
         <Table
           dataSource={complaints}
           columns={columns}
-          rowKey="id"
+          rowKey="_id" // Use _id as the unique key for rows
           bordered
           pagination={{ pageSize: 5 }}
           style={{ backgroundColor: '#EAF2F8' }}
         />
       )}
-
-      {/* Add Complaint Modal */}
-      <Modal
-        title="Add New Complaint"
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        centered
-        width={600} // Adjust width of modal
-      >
-        <Form form={form} layout="vertical" onFinish={handleAddComplaint}>
-          <Form.Item
-            label="Teacher ID"
-            name="teacherId"
-            rules={[{ required: true, message: 'Please enter teacher ID' }]}
-          >
-            <Input placeholder="Enter teacher ID" />
-          </Form.Item>
-
-          <Form.Item
-            label="Class"
-            name="class"
-            rules={[{ required: true, message: 'Please enter class' }]}
-          >
-            <Input placeholder="Enter class" />
-          </Form.Item>
-
-          <Form.Item
-            label="Full Name"
-            name="fullname"
-            rules={[{ required: true, message: 'Please enter full name' }]}
-          >
-            <Input placeholder="Enter full name" />
-          </Form.Item>
-
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[{ required: true, message: 'Please enter description' }]}
-          >
-            <Input.TextArea rows={4} placeholder="Enter complaint description" />
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ backgroundColor: '#2C3E50' }}>
-              Add Complaint
-            </Button>
-            <Button
-              onClick={() => setIsModalVisible(false)}
-              style={{ marginLeft: '10px', backgroundColor: 'red', color: '#FFFFFF' }}
-            >
-              Cancel
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
     </div>
   );
 };
 
 export default AdminComplaints;
-

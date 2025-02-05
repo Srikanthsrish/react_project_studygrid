@@ -18,7 +18,7 @@ const StudentTimetable = () => {
   const fetchTimetable = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/timetable/${className}`);
+      const response = await axios.get(`https://studygrid-backendmongo.onrender.com/timetable/${className}`);
       setTimetable(response.data);
       setError("");
       toast.success("Timetable loaded successfully!");

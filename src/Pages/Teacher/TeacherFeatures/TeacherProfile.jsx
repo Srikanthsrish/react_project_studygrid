@@ -1,32 +1,35 @@
+
+
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Card, Spin, Typography, Descriptions } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { Card, Spin, Typography, Descriptions, Button } from "antd";
+import { LoadingOutlined, ReloadOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
 const TeacherProfile = () => {
   const { teacherId } = useParams();
   const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const fetchProfile = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.get(`https://studygrid-backendmongo.onrender.com/api/teacher/profile/${teacherId}`);
+      setProfile(response.data.profile);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch teacher profile");
+    }
+
+    setLoading(false);
+  };
+
   useEffect(() => {
-    fetch(`http://localhost:5000/api/teacher/profile/${teacherId}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch teacher profile");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setProfile(data.profile);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
+    if (teacherId) fetchProfile();
   }, [teacherId]);
 
   if (loading) {
@@ -34,7 +37,14 @@ const TeacherProfile = () => {
   }
 
   if (error) {
-    return <Title level={3} style={{ color: "red", textAlign: "center" }}>Error: {error}</Title>;
+    return (
+      <div style={{ textAlign: "center", color: "red" }}>
+        <Title level={3}>{error}</Title>
+        <Button type="primary" icon={<ReloadOutlined />} onClick={fetchProfile}>
+          Retry
+        </Button>
+      </div>
+    );
   }
 
   return (
@@ -49,9 +59,8 @@ const TeacherProfile = () => {
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <Title level={2} style={{ color: "#2C3E50", textAlign: "center" }}>
-        Teacher Profile
-      </Title>
+      <Title level={2} style={{ color: "#2C3E50", textAlign: "center" }}>Teacher Profile</Title>
+
       {profile && (
         <Descriptions bordered column={1} size="middle" style={{ marginTop: 20 }}>
           <Descriptions.Item label="Teacher ID" labelStyle={{ fontWeight: "bold", color: "#2C3E50" }}>
@@ -70,4 +79,3 @@ const TeacherProfile = () => {
 };
 
 export default TeacherProfile;
-

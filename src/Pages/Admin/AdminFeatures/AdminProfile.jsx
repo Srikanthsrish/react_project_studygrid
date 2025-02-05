@@ -15,7 +15,7 @@ const AdminProfile = () => {
     const fetchAdminProfile = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/admin/profile?admin_id=${admin_id}`
+          `https://studygrid-backendmongo.onrender.com/admin/profile/${admin_id}`
         );
 
         if (!response.ok) {

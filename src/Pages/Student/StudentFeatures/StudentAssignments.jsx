@@ -23,7 +23,7 @@ const StudentAssignments = () => {
 
     setLoading(true);
     axios
-      .get(`http://localhost:5000/Studentassignments/${className}`)
+      .get(`https://studygrid-backendmongo.onrender.com/students/assignments/${className}`)
       .then((response) => {
         setAssignments(response.data);
         setError(null);

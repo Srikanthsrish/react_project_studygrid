@@ -109,7 +109,7 @@ const StudentDashboard = () => {
                     <Routes>
                         <Route path="/" element={<Navigate to="home" />} />
                         <Route path="home" element={<StudentHome />} />
-                        <Route path="complains" element={<SubmitComplaint />} />
+                        <Route path="complaints" element={<SubmitComplaint />} />
                         <Route path="assignments" element={<StudentAssignments />} />
                         <Route path="timetable" element={<StudentTimetable />} />
                         <Route path="profile" element={<StudentProfile fullName={fullName} />} />

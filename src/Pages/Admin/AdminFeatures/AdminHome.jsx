@@ -13,7 +13,7 @@ const AdminHome = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/stats");
+        const response = await axios.get("https://studygrid-backendmongo.onrender.com/api/stats");
         setStats(response.data);
       } catch (error) {
         message.error("Failed to load stats.");

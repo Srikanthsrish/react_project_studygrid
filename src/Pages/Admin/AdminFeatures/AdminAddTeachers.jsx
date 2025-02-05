@@ -19,7 +19,7 @@ const AdminAddTeachers = () => {
     const fetchTeachers = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://localhost:5000/api/teachers');
+            const response = await axios.get('https://studygrid-backendmongo.onrender.com/api/teachers');
             setTeachers(response.data);
         } catch (error) {
             message.error('Failed to load teachers');
@@ -30,14 +30,20 @@ const AdminAddTeachers = () => {
 
     // Handle adding a teacher
     const handleAddTeacher = async (values) => {
+        setLoading(true); // Start loading spinner
         try {
-            const response = await axios.post('http://localhost:5000/api/teachers', values);
-            setTeachers([...teachers, { id: response.data.id, ...values }]);
+            const response = await axios.post('https://studygrid-backendmongo.onrender.com/api/teachers', values);
+
+            // Add the newly added teacher to the teachers state
+            setTeachers([...teachers, { teacherId: response.data.teacher.teacherId, ...values }]);
+
             message.success('Teacher added successfully!');
             form.resetFields();
             setIsModalVisible(false);
         } catch (error) {
             message.error('Failed to add teacher');
+        } finally {
+            setLoading(false); // Stop loading spinner
         }
     };
 
@@ -45,7 +51,7 @@ const AdminAddTeachers = () => {
     const handleDeleteTeacher = async (teacherId) => {
         if (!window.confirm('Are you sure you want to delete this teacher?')) return;
         try {
-            await axios.delete(`http://localhost:5000/api/teachers/${teacherId}`);
+            await axios.delete(`https://studygrid-backendmongo.onrender.com/api/teachers/${teacherId}`);
             setTeachers(teachers.filter(teacher => teacher.teacherId !== teacherId));
             message.success('Teacher deleted successfully!');
         } catch (error) {
@@ -94,10 +100,7 @@ const AdminAddTeachers = () => {
                     <Form.Item
                         label="Email"
                         name="email"
-                        rules={[
-                            { required: true, message: 'Please enter email' },
-                            { type: 'email', message: 'Enter a valid email' }
-                        ]}
+                        rules={[{ required: true, message: 'Please enter email' }, { type: 'email', message: 'Enter a valid email' }]}
                     >
                         <Input placeholder="Enter email" />
                     </Form.Item>
