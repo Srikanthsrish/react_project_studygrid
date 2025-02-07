@@ -1,15 +1,17 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Tag, message, Spin } from 'antd';
+import { Table, Button, Tag, message, Spin, Grid } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import 'antd/dist/reset.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const { useBreakpoint } = Grid;
+
 const AdminComplaints = () => {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(false);
+  const screens = useBreakpoint();
 
   useEffect(() => {
     fetchComplaints();
@@ -40,7 +42,7 @@ const AdminComplaints = () => {
   const columns = [
     {
       title: 'Complaint ID',
-      dataIndex: '_id', // Use _id field as identifier
+      dataIndex: '_id',
       key: '_id',
     },
     {
@@ -90,8 +92,8 @@ const AdminComplaints = () => {
             <Button
               type="primary"
               icon={<CheckCircleOutlined />}
-              onClick={() => handleStatusChange(record._id, 'resolved')} // Use _id for status change
-              style={{ marginRight: '10px', backgroundColor: '#27AE60', border: 'none' }}
+              onClick={() => handleStatusChange(record._id, 'resolved')}
+              style={{ marginRight: '10px', backgroundColor: '#27AE60', border: 'none', width: screens.xs ? '100%' : 'auto' }}
             >
               Resolve
             </Button>
@@ -99,7 +101,8 @@ const AdminComplaints = () => {
               type="primary"
               danger
               icon={<CloseCircleOutlined />}
-              onClick={() => handleStatusChange(record._id, 'rejected')} // Use _id for status change
+              onClick={() => handleStatusChange(record._id, 'rejected')}
+              style={{ width: screens.xs ? '100%' : 'auto' }}
             >
               Reject
             </Button>
@@ -110,7 +113,7 @@ const AdminComplaints = () => {
   ];
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px' }}>
+    <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
       <h1 style={{ textAlign: 'center', color: '#2C3E50' }}>Complaint Management</h1>
       <ToastContainer position="top-right" autoClose={3000} />
 
@@ -122,10 +125,13 @@ const AdminComplaints = () => {
         <Table
           dataSource={complaints}
           columns={columns}
-          rowKey="_id" // Use _id as the unique key for rows
+          rowKey="_id"
           bordered
           pagination={{ pageSize: 5 }}
-          style={{ backgroundColor: '#EAF2F8' }}
+          style={{
+            backgroundColor: '#EAF2F8',
+            overflowX: screens.xs ? 'scroll' : 'auto', // Adding horizontal scroll on small screens
+          }}
         />
       )}
     </div>

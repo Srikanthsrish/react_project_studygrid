@@ -1,3 +1,5 @@
+
+
 // import React, { useState, useEffect } from "react";
 // import { useParams } from "react-router-dom";
 // import axios from "axios";
@@ -38,7 +40,7 @@
 //     setLoading(true);
 //     try {
 //       const response = await axios.get(
-//         `http://localhost:3006/complains/${className}/${fullName}`
+//         `https://studygrid-backendmongo.onrender.com/complains/${className}/${fullName}`
 //       );
 //       setComplaints(response.data);
 //       toast.success("Complaints loaded successfully!");
@@ -59,10 +61,10 @@
 //     try {
 //       const complaintData = {
 //         ...values,
-//         teacherId: "T001", // Example teacherId, modify as needed
+//         teacherId: "T001", // Example: add teacherId here, modify based on your application logic
 //       };
-//       await axios.post(
-//         `http://localhost:3006/complains/${className}/${fullName}`,
+//       const response = await axios.post(
+//         `https://studygrid-backendmongo.onrender.com/complains/${className}/${fullName}`,
 //         complaintData
 //       );
 //       toast.success("Complaint submitted successfully!");
@@ -80,7 +82,7 @@
 //     setLoading(true);
 //     try {
 //       console.log("Deleting complaint with ID:", id);
-//       await axios.delete(`http://localhost:3006/complains/${id}`);
+//       await axios.delete(`https://studygrid-backendmongo.onrender.com/complains/${id}`);
 //       setComplaints(complaints.filter((complaint) => complaint._id !== id));
 //       toast.success("Complaint deleted successfully!");
 //     } catch (err) {
@@ -92,6 +94,21 @@
 //   // Table Columns
 //   const columns = [
 //     {
+//       title: "ID",
+//       dataIndex: "_id",
+//       key: "_id",
+//     },
+//     {
+//       title: "Class",
+//       dataIndex: "class",
+//       key: "class",
+//     },
+//     {
+//       title: "Full Name",
+//       dataIndex: "fullname",
+//       key: "fullname",
+//     },
+//     {
 //       title: "Description",
 //       dataIndex: "description",
 //       key: "description",
@@ -102,9 +119,9 @@
 //       dataIndex: "status",
 //       key: "status",
 //       filters: [
-//         { text: "Pending", value: "Pending" },
-//         { text: "Resolved", value: "Resolved" },
-//         { text: "In Progress", value: "In Progress" },
+//         { text: "Pending", value: "pending" },
+//         { text: "Resolved", value: "resolved" },
+//         { text: "In Progress", value: "in-progress" },
 //       ],
 //       onFilter: (value, record) => record.status === value,
 //     },
@@ -122,7 +139,7 @@
 //           type="primary"
 //           danger
 //           icon={<DeleteOutlined />}
-//           onClick={() => handleDelete(record._id)}
+//           onClick={() => handleDelete(record._id)} // Use _id for deletion
 //         >
 //           Delete
 //         </Button>
@@ -141,7 +158,7 @@
 //         type="primary"
 //         onClick={() => setModalVisible(true)}
 //         style={{
-//           backgroundColor: "#3498DB",
+//           backgroundColor: "#2C3E50",
 //           borderColor: "#3498DB",
 //           marginBottom: "1rem",
 //         }}
@@ -152,7 +169,7 @@
 //       {/* Modal for adding complaint */}
 //       <Modal
 //         title="Submit a Complaint"
-//         open={modalVisible}
+//         visible={modalVisible}
 //         onCancel={() => setModalVisible(false)}
 //         footer={null}
 //         width={600}
@@ -176,11 +193,11 @@
 //             <Input.TextArea placeholder="Enter complaint details" />
 //           </Form.Item>
 
-//           <Form.Item label="Status" name="status" initialValue="Pending">
+//           <Form.Item label="Status" name="status" initialValue="pending">
 //             <Select>
-//               <Option value="Pending">Pending</Option>
-//               <Option value="Resolved">Resolved</Option>
-//               <Option value="In Progress">In Progress</Option>
+//               <Option value="pending">Pending</Option>
+//               <Option value="resolved">Resolved</Option>
+//               <Option value="in-progress">In Progress</Option>
 //             </Select>
 //           </Form.Item>
 
@@ -190,7 +207,7 @@
 //               htmlType="submit"
 //               icon={<SendOutlined />}
 //               style={{
-//                 backgroundColor: "#3498DB",
+//                 backgroundColor: "#2C3E50",
 //                 borderColor: "#3498DB",
 //               }}
 //             >
@@ -215,12 +232,12 @@
 //         {loading ? (
 //           <Spin size="large" style={{ display: "block", margin: "auto" }} />
 //         ) : complaints.length === 0 ? (
-//           <Alert message="No complaints found." type="info" showIcon />
+//           <Alert message="No complaints found." type="info"  showIcon / >
 //         ) : (
 //           <Table
 //             columns={columns}
 //             dataSource={complaints}
-//             rowKey="_id"
+//             rowKey="_id" // Use _id as row key
 //             bordered
 //             pagination={{ pageSize: 5 }}
 //             style={{
@@ -238,8 +255,7 @@
 //   );
 // };
 
-// export default SubmitComplaint;
-
+// export default SubmitComplaint; 
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -254,6 +270,7 @@ import {
   Alert,
   Space,
   Modal,
+  Grid,
 } from "antd";
 import { DeleteOutlined, SendOutlined } from "@ant-design/icons";
 import { toast, ToastContainer } from "react-toastify";
@@ -269,6 +286,7 @@ const SubmitComplaint = () => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const [modalVisible, setModalVisible] = useState(false);
+  const screens = Grid.useBreakpoint(); // Use the Grid breakpoints
 
   // Fetch complaints when component mounts or params change
   const fetchComplaints = async () => {
@@ -388,7 +406,13 @@ const SubmitComplaint = () => {
   ];
 
   return (
-    <div style={{ padding: "2rem", backgroundColor: "#EAF2F8", minHeight: "100vh" }}>
+    <div
+      style={{
+        padding: "2rem",
+        backgroundColor: "#EAF2F8",
+        minHeight: "100vh",
+      }}
+    >
       <Title level={2} style={{ color: "#2C3E50", textAlign: "center" }}>
         Submit Complaint for {className} - {fullName}
       </Title>
@@ -398,9 +422,10 @@ const SubmitComplaint = () => {
         type="primary"
         onClick={() => setModalVisible(true)}
         style={{
-          backgroundColor: "#3498DB",
+          backgroundColor: "#2C3E50",
           borderColor: "#3498DB",
           marginBottom: "1rem",
+          width: screens.xs ? "100%" : "auto", // Full width on small screens
         }}
       >
         Add Complaint
@@ -412,7 +437,7 @@ const SubmitComplaint = () => {
         visible={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}
-        width={600}
+        width={screens.xs ? "90%" : "600px"} // Adjust modal width on small screens
       >
         <Form
           form={form}
@@ -447,7 +472,7 @@ const SubmitComplaint = () => {
               htmlType="submit"
               icon={<SendOutlined />}
               style={{
-                backgroundColor: "#3498DB",
+                backgroundColor: "#2C3E50",
                 borderColor: "#3498DB",
               }}
             >
@@ -480,6 +505,7 @@ const SubmitComplaint = () => {
             rowKey="_id" // Use _id as row key
             bordered
             pagination={{ pageSize: 5 }}
+            scroll={{ x: screens.xs ? 600 : "auto" }} // Make table scrollable on smaller screens
             style={{
               backgroundColor: "#FFFFFF",
               boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
@@ -495,4 +521,4 @@ const SubmitComplaint = () => {
   );
 };
 
-export default SubmitComplaint; 
+export default SubmitComplaint;

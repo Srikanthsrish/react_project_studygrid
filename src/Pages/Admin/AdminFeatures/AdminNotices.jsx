@@ -1,3 +1,5 @@
+
+
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
 // import {
@@ -29,7 +31,7 @@
 //   const fetchNotices = async () => {
 //     setLoading(true);
 //     try {
-//       const response = await axios.get("http://localhost:3006/api/notices");
+//       const response = await axios.get("https://studygrid-backendmongo.onrender.com/api/notices");
 //       setNotices(response.data);
 //     } catch (error) {
 //       message.error("Failed to load notices.");
@@ -41,7 +43,7 @@
 //   const handleFormSubmit = async (values) => {
 //     setLoading(true);
 //     try {
-//       await axios.post("http://localhost:3006/api/notices", values);
+//       await axios.post("https://studygrid-backendmongo.onrender.com/api/notices", values);
 //       message.success("Notice added successfully!");
 //       form.resetFields();
 //       setShowFormModal(false);
@@ -53,7 +55,7 @@
 //     }
 //   };
 
-//   const handleDeleteNotice = (id) => {
+//   const handleDeleteNotice = (_id) => {
 //     confirm({
 //       title: "Are you sure you want to delete this notice?",
 //       icon: <ExclamationCircleOutlined />,
@@ -63,9 +65,10 @@
 //       onOk: async () => {
 //         setLoading(true);
 //         try {
-//           await axios.delete(`http://localhost:3006/api/notices/${_id}`);
+//           // Corrected: Use `_id` in the delete request URL
+//           await axios.delete(`https://studygrid-backendmongo.onrender.com/api/notices/${_id}`);
 //           message.success("Notice deleted successfully.");
-//           fetchNotices();
+//           fetchNotices(); // Refresh the notices list
 //         } catch (error) {
 //           message.error("Failed to delete notice.");
 //         } finally {
@@ -101,7 +104,8 @@
 //       title: "Actions",
 //       key: "actions",
 //       render: (_, record) => (
-//         <Button danger onClick={() => handleDeleteNotice(record.id)}>
+//         // Updated to pass _id as parameter to handleDeleteNotice
+//         <Button danger onClick={() => handleDeleteNotice(record._id)}>
 //           Delete
 //         </Button>
 //       ),
@@ -192,14 +196,13 @@
 //       {loading ? (
 //         <Spin size="large" />
 //       ) : (
-//         <Table columns={columns} dataSource={notices} rowKey="id" bordered />
+//         <Table columns={columns} dataSource={notices} rowKey="_id" bordered />
 //       )}
 //     </div>
 //   );
 // };
 
 // export default AdminNotices;
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -211,18 +214,21 @@ import {
   Modal,
   Spin,
   message,
+  Grid,
 } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import "antd/dist/reset.css";
 
 const { Option } = Select;
 const { confirm } = Modal;
+const { useBreakpoint } = Grid;
 
 const AdminNotices = () => {
   const [form] = Form.useForm();
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
+  const screens = useBreakpoint();
 
   useEffect(() => {
     fetchNotices();
@@ -265,7 +271,6 @@ const AdminNotices = () => {
       onOk: async () => {
         setLoading(true);
         try {
-          // Corrected: Use `_id` in the delete request URL
           await axios.delete(`https://studygrid-backendmongo.onrender.com/api/notices/${_id}`);
           message.success("Notice deleted successfully.");
           fetchNotices(); // Refresh the notices list
@@ -304,7 +309,6 @@ const AdminNotices = () => {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        // Updated to pass _id as parameter to handleDeleteNotice
         <Button danger onClick={() => handleDeleteNotice(record._id)}>
           Delete
         </Button>
@@ -313,15 +317,16 @@ const AdminNotices = () => {
   ];
 
   return (
-    <div style={{ padding: 20, backgroundColor: "#EAF2F8", borderRadius: 10 }}>
+    <div style={{ padding: "20px", backgroundColor: "#EAF2F8", borderRadius: 10 }}>
       <h2 style={{ color: "#2C3E50" }}>Notice Management</h2>
       <Button
         type="primary"
         onClick={() => setShowFormModal(true)} // Open modal on button click
         style={{
-          marginBottom: 20,
+          marginBottom: "20px",
           backgroundColor: "#2C3E50",
           borderColor: "#2C3E50",
+          width: screens.xs ? "100%" : "auto", // Full-width on small screens
         }}
       >
         Add Notice
@@ -333,13 +338,13 @@ const AdminNotices = () => {
         visible={showFormModal}
         onCancel={() => setShowFormModal(false)} // Close the modal
         footer={null}
-        width={600}
+        width={screens.xs ? "90%" : 600} // Adjust modal width based on screen size
       >
         <Form
           form={form}
           layout="vertical"
           onFinish={handleFormSubmit}
-          style={{ background: "white", padding: 20, borderRadius: 10 }}
+          style={{ background: "white", padding: "20px", borderRadius: "10px" }}
         >
           <Form.Item
             label="Select Audience"
@@ -396,7 +401,13 @@ const AdminNotices = () => {
       {loading ? (
         <Spin size="large" />
       ) : (
-        <Table columns={columns} dataSource={notices} rowKey="_id" bordered />
+        <Table
+          columns={columns}
+          dataSource={notices}
+          rowKey="_id"
+          bordered
+          scroll={{ x: screens.xs ? 600 : "auto" }} // Make table scrollable on small screens
+        />
       )}
     </div>
   );

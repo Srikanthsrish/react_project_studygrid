@@ -75,6 +75,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    overflowX: "auto", // Ensures no content overflows horizontally
   },
   loader: {
     display: "flex",
@@ -82,11 +83,13 @@ const styles = {
     marginTop: "2rem",
   },
   profileCard: {
-    width: 400,
+    width: "100%", // Ensures card takes full width on mobile
+    maxWidth: 400, // Max width for larger screens
     padding: "1.5rem",
     backgroundColor: "#FFFFFF",
     borderRadius: "10px",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    overflowX: "auto", // In case of long text
   },
   icon: {
     marginRight: 8,
@@ -95,3 +98,4 @@ const styles = {
 };
 
 export default AdminProfile;
+
