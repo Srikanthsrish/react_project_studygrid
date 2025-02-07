@@ -271,7 +271,7 @@ const Complaints = () => {
         type="primary"
         icon={<PlusOutlined />}
         onClick={() => setModalVisible(true)}
-        style={{ marginBottom: '20px' }}
+        style={{ marginBottom: '20px',backgroundColor:"#2C3E50" }}
       >
         Add Complaint
       </Button>
@@ -328,7 +328,7 @@ const Complaints = () => {
               type="primary"
               htmlType="submit"
               loading={loading}
-              style={{ width: '100%', borderRadius: '5px' }}
+              style={{ width: '100%', borderRadius: '5px',backgroundColor:"#2C3E50" }}
             >
               Submit
             </Button>
