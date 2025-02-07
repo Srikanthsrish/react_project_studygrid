@@ -195,7 +195,7 @@ const AdminDashboard = () => {
       "@media (max-width: 768px)": {
         position: "absolute",
         zIndex: 101,
-        width: isSidebarOpen ? "250px" : "0", // On smaller screens, collapse sidebar to 0 width
+        width: isSidebarOpen ? "50px" : "0", // On smaller screens, collapse sidebar to 0 width
       },
     },
     responsiveHeader: {
