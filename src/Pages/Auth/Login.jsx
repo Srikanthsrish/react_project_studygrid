@@ -8,15 +8,24 @@ const { Title, Paragraph } = Typography;
 
 const Login = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(null);
 
   const handleLoginClick = (role) => {
-    setLoading(true);
+    setLoading(role);
     message.loading({ content: "Redirecting...", duration: 1 });
 
     setTimeout(() => {
       navigate(`/${role}/Login`);
-      setLoading(false);
+      setLoading(null);
+    }, 1200);
+  };
+
+  const handleGuestLogin = () => {
+    setLoading("guest");
+    message.loading({ content: "Redirecting...", duration: 1 });
+    setTimeout(() => {
+      navigate("/admin/dashboard/guest");
+      setLoading(null);
     }, 1200);
   };
 
@@ -26,39 +35,43 @@ const Login = () => {
 
       <div style={styles.cardContainer}>
         {/* Admin Card */}
-        <Card
-          hoverable
-          style={styles.card}
-          onClick={() => handleLoginClick("admin")}
-        >
-          {loading ? <Spin size="large" /> : <FaUserShield size={50} style={styles.iconStyle} />}
+        <Card hoverable style={styles.card}>
+          {loading === "admin" ? <Spin size="large" /> : <FaUserShield size={50} style={styles.iconStyle} />}
           <Title level={3} style={styles.title}>Admin</Title>
           <Paragraph>Login as an administrator to manage the platform.</Paragraph>
-          <Button type="primary" block>Login</Button>
+          <div style={styles.buttonContainer}>
+            <Button type="primary" style={styles.button} onClick={() => handleLoginClick("admin")} disabled={loading}>
+              Login
+            </Button>
+            <Button type="primary" style={{ ...styles.button }} 
+              onClick={handleGuestLogin} disabled={loading}>
+              Guest Login
+            </Button>
+          </div>
         </Card>
 
         {/* Student Card */}
-        <Card
-          hoverable
-          style={styles.card}
-          onClick={() => handleLoginClick("student")}
-        >
-          {loading ? <Spin size="large" /> : <FaGraduationCap size={50} style={styles.iconStyle} />}
+        <Card hoverable style={styles.card}>
+          {loading === "student" ? <Spin size="large" /> : <FaGraduationCap size={50} style={styles.iconStyle} />}
           <Title level={3} style={styles.title}>Student</Title>
           <Paragraph>Access courses, assignments, and progress tracking.</Paragraph>
-          <Button type="primary" block>Login</Button>
+          <div style={styles.buttonContainer}>
+            <Button type="primary" style={styles.button} onClick={() => handleLoginClick("student")} disabled={loading}>
+              Login
+            </Button>
+          </div>
         </Card>
 
         {/* Teacher Card */}
-        <Card
-          hoverable
-          style={styles.card}
-          onClick={() => handleLoginClick("teacher")}
-        >
-          {loading ? <Spin size="large" /> : <FaChalkboardTeacher size={50} style={styles.iconStyle} />}
+        <Card hoverable style={styles.card}>
+          {loading === "teacher" ? <Spin size="large" /> : <FaChalkboardTeacher size={50} style={styles.iconStyle} />}
           <Title level={3} style={styles.title}>Teacher</Title>
           <Paragraph>Manage students, assignments, and courses.</Paragraph>
-          <Button type="primary" block>Login</Button>
+          <div style={styles.buttonContainer}>
+            <Button type="primary" style={styles.button} onClick={() => handleLoginClick("teacher")} disabled={loading}>
+              Login
+            </Button>
+          </div>
         </Card>
       </div>
     </div>
@@ -71,7 +84,8 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "100vh",
+    minHeight: "100vh", // Ensures full coverage even on scrolling
+    width: "100%", // Covers full width
     backgroundColor: "#EAF2F8",
     padding: "20px",
     textAlign: "center",
@@ -87,7 +101,7 @@ const styles = {
     justifyContent: "center",
   },
   card: {
-    width: "280px",
+    width: "300px",
     textAlign: "center",
     borderRadius: "10px",
     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
@@ -100,6 +114,16 @@ const styles = {
   },
   title: {
     color: "#2C3E50",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "10px",
+    marginTop: "10px",
+  },
+  button: {
+    width: "150px",
+    textAlign: "center",
   },
 };
 

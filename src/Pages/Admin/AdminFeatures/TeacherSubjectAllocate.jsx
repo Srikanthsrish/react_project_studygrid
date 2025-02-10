@@ -1,12 +1,15 @@
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
-// import { Button, Form, Input, Table, Spin, message, Modal } from "antd";
+// import { Button, Form, Input, Table, Spin, message, Modal, Grid } from "antd";
 // import "antd/dist/reset.css";
+
+// const { useBreakpoint } = Grid;
 
 // const TeacherSubjectAllocation = () => {
 //   const [allocations, setAllocations] = useState([]);
 //   const [showForm, setShowForm] = useState(false);
 //   const [loading, setLoading] = useState(false);
+//   const screens = useBreakpoint(); // For responsive layout
 
 //   useEffect(() => {
 //     fetchAllocations();
@@ -72,7 +75,7 @@
 //       <Button
 //         type="primary"
 //         onClick={() => setShowForm(true)}
-//         style={{ marginBottom: "20px", backgroundColor: '#2C3E50' }}
+//         style={{ marginBottom: "20px", backgroundColor: '#2C3E50', width: screens.xs ? '100%' : 'auto' }} // Full-width on small screens
 //       >
 //         Add Allocation
 //       </Button>
@@ -84,7 +87,7 @@
 //         onCancel={() => setShowForm(false)}
 //         footer={null}
 //         centered
-//         width={600}
+//         width={screens.xs ? "90%" : 600} // 90% width on small screens
 //       >
 //         <Form layout="vertical" onFinish={handleSubmit}>
 //           <Form.Item name="teacher_name" label="Teacher Name" rules={[{ required: true, message: "Teacher Name is required" }]}>
@@ -103,10 +106,10 @@
 //             <Input placeholder="Enter Teacher ID" />
 //           </Form.Item>
 //           <div style={{ display: "flex", gap: "10px" }}>
-//             <Button type="primary" htmlType="submit" loading={loading} style={{ backgroundColor: '#2C3E50'}}>
+//             <Button type="primary" htmlType="submit" loading={loading} style={{ backgroundColor: '#2C3E50', flex: 1 }}>
 //               Add Allocation
 //             </Button>
-//             <Button type="default" danger onClick={() => setShowForm(false)} >
+//             <Button type="default" danger onClick={() => setShowForm(false)} style={{ flex: 1 }}>
 //               Cancel
 //             </Button>
 //           </div>
@@ -120,6 +123,7 @@
 //           bordered
 //           rowKey="teacher_id"
 //           style={{ marginTop: "20px" }}
+//           scroll={{ x: screens.xs ? 600 : 'auto' }} // Scroll horizontally on smaller screens
 //         >
 //           <Table.Column title="Teacher Name" dataIndex="teacher_name" key="teacher_name" />
 //           <Table.Column title="Subject Code" dataIndex="subject_code" key="subject_code" />
@@ -271,14 +275,40 @@ const TeacherSubjectAllocation = () => {
           style={{ marginTop: "20px" }}
           scroll={{ x: screens.xs ? 600 : 'auto' }} // Scroll horizontally on smaller screens
         >
-          <Table.Column title="Teacher Name" dataIndex="teacher_name" key="teacher_name" />
-          <Table.Column title="Subject Code" dataIndex="subject_code" key="subject_code" />
-          <Table.Column title="Subject Name" dataIndex="subject_name" key="subject_name" />
-          <Table.Column title="Class" dataIndex="class" key="class" />
-          <Table.Column title="Teacher ID" dataIndex="teacher_id" key="teacher_id" />
+          <Table.Column 
+            title="Teacher Name" 
+            dataIndex="teacher_name" 
+            key="teacher_name" 
+            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })} 
+          />
+          <Table.Column 
+            title="Subject Code" 
+            dataIndex="subject_code" 
+            key="subject_code" 
+            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })} 
+          />
+          <Table.Column 
+            title="Subject Name" 
+            dataIndex="subject_name" 
+            key="subject_name" 
+            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })} 
+          />
+          <Table.Column 
+            title="Class" 
+            dataIndex="class" 
+            key="class" 
+            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })} 
+          />
+          <Table.Column 
+            title="Teacher ID" 
+            dataIndex="teacher_id" 
+            key="teacher_id" 
+            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })} 
+          />
           <Table.Column
             title="Actions"
             key="actions"
+            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })}
             render={(_, record) => (
               <Button type="default" danger onClick={() => handleDelete(record.teacher_id)}>
                 Delete
@@ -292,5 +322,3 @@ const TeacherSubjectAllocation = () => {
 };
 
 export default TeacherSubjectAllocation;
-
-

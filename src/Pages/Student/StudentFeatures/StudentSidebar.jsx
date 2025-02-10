@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import {
@@ -10,7 +11,7 @@ import {
 } from '@mui/icons-material';
 
 const StudentSidebar = ({ isSidebarOpen }) => {
-  const { fullName, class: className } = useParams(); // Destructure class from useParams
+  const { fullName, class: className } = useParams();
 
   const navLinks = [
     { path: `/student/dashboard/${fullName}/${className}/home`, icon: <HomeIcon />, name: 'Home' },
@@ -30,6 +31,25 @@ const StudentSidebar = ({ isSidebarOpen }) => {
       display: 'flex',
       flexDirection: 'column',
       padding: '1rem 0',
+      alignItems: 'center',
+    },
+    logoContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      padding: '0.75rem 1rem',
+      width: '100%',
+    },
+    logo: {
+      width: '60px', // Same as icon size
+      height: '60px',
+      borderRadius: '50px', // Rounded image
+    },
+    logoText: {
+      marginLeft: '1rem',
+      color: '#ecf0f1',
+      fontSize: '1rem', // Same as nav link text
+      display: isSidebarOpen ? 'block' : 'none',
     },
     link: {
       display: 'flex',
@@ -39,6 +59,7 @@ const StudentSidebar = ({ isSidebarOpen }) => {
       textDecoration: 'none',
       transition: 'background-color 0.3s ease',
       fontSize: '1rem',
+      width: '100%',
     },
     linkText: {
       marginLeft: '1rem',
@@ -52,6 +73,13 @@ const StudentSidebar = ({ isSidebarOpen }) => {
 
   return (
     <div style={styles.sidebar}>
+      {/* Sidebar Logo with Text */}
+      <div style={styles.logoContainer}>
+        <img src="/studygrid9.png" alt="App Logo" style={styles.logo} />
+        <span style={styles.logoText}>Study Grid</span>
+      </div>
+
+      {/* Navigation Links */}
       {navLinks.map((link) => (
         <NavLink
           key={link.path}

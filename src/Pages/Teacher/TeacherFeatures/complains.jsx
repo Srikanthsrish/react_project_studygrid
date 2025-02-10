@@ -1,166 +1,25 @@
-// import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-// import { useParams } from 'react-router-dom';
-// import { Table, Form, Input, Button, Select, Modal, notification, Spin } from 'antd';
-// import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-
-// const { TextArea } = Input;
-// const { Option } = Select;
-
-// const Complaints = () => {
-//   const { teacherId } = useParams();
-//   const [complaints, setComplaints] = useState([]);
-//   const [description, setDescription] = useState('');
-//   const [status, setStatus] = useState('pending');
-//   const [loading, setLoading] = useState(false);
-//   const [modalVisible, setModalVisible] = useState(false);
-
-//   useEffect(() => {
-//     fetchComplaints();
-//   }, [teacherId]);
-
-//   // ✅ Function to Fetch Complaints
-//   const fetchComplaints = async () => {
-//     setLoading(true);
-//     try {
-//       console.log(`Fetching complaints for teacher ID: ${teacherId}`);
-//       const response = await axios.get(`http://localhost:5000/complaints/${teacherId}`);
-//       console.log('Complaints fetched:', response.data);
-//       setComplaints(response.data);
-//     } catch (error) {
-//       console.error('Error fetching complaints:', error);
-//       notification.error({ message: 'Error fetching complaints' });
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   // ✅ Function to Add a Complaint
-//   const handleSubmit = async () => {
-//     if (!description.trim()) {
-//       notification.error({ message: 'Please provide a description.' });
-//       return;
-//     }
-
-//     setLoading(true);
-//     try {
-//       await axios.post(`http://localhost:5000/complaints/${teacherId}`, {
-//         description,
-//         status,
-//       });
-
-//       notification.success({ message: 'Complaint submitted successfully!' });
-//       setModalVisible(false);
-//       setDescription('');
-//       setStatus('pending');
-//       fetchComplaints(); // Refresh complaints
-//     } catch (error) {
-//       console.error('Error submitting complaint:', error);
-//       notification.error({ message: 'Error submitting complaint' });
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   // ✅ Function to Delete a Complaint
-//   const handleDelete = async (id) => {
-//     setLoading(true);
-//     try {
-//       await axios.delete(`http://localhost:5000/complaints/${id}`);
-//       notification.success({ message: 'Complaint deleted successfully' });
-//       setComplaints(complaints.filter((complaint) => complaint._id !== id));
-//     } catch (error) {
-//       console.error('Error deleting complaint:', error);
-//       notification.error({ message: 'Error deleting complaint' });
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   // Table Columns
-//   const columns = [
-//     {
-//       title: 'Description',
-//       dataIndex: 'description',
-//       key: 'description',
-//     },
-//     {
-//       title: 'Status',
-//       dataIndex: 'status',
-//       key: 'status',
-//       render: (status) => (
-//         <span style={{ color: status === 'resolved' ? 'green' : 'orange' }}>{status}</span>
-//       ),
-//     },
-//     {
-//       title: 'Created At',
-//       dataIndex: 'created_at',
-//       key: 'created_at',
-//       render: (text) => <span>{new Date(text).toLocaleString()}</span>,
-//     },
-//     {
-//       title: 'Action',
-//       key: 'action',
-//       render: (text, record) => (
-//         <Button danger icon={<DeleteOutlined />} onClick={() => handleDelete(record._id)}>
-//           Delete
-//         </Button>
-//       ),
-//     },
-//   ];
-
-//   return (
-//     <div style={{ backgroundColor: '#EAF2F8', padding: '20px' }}>
-//       <h1 style={{ color: '#2C3E50' }}>Complaints for Teacher {teacherId}</h1>
-
-//       {/* Add Complaint Button */}
-//       <Button
-//         type="primary"
-//         icon={<PlusOutlined />}
-//         onClick={() => setModalVisible(true)}
-//         style={{ marginBottom: '20px' }}
-//       >
-//         Add Complaint
-//       </Button>
-
-//       {/* Modal to Add Complaint */}
-//       <Modal title="Add Complaint" visible={modalVisible} onCancel={() => setModalVisible(false)} footer={null}>
-//         <Form layout="vertical" onFinish={handleSubmit}>
-//           <Form.Item label="Description" required>
-//             <TextArea value={description} onChange={(e) => setDescription(e.target.value)} />
-//           </Form.Item>
-//           <Button type="primary" htmlType="submit" loading={loading}>Submit Complaint</Button>
-//         </Form>
-//       </Modal>
-
-//       {/* Complaints Table */}
-//       {loading ? <Spin size="large" /> : <Table columns={columns} dataSource={complaints} rowKey="_id" />}
-//     </div>
-//   );
-// };
-
-// export default Complaints;
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Table, Form, Input, Button, Select, Modal, notification, Spin } from 'antd';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 const { Option } = Select;
+const { confirm } = Modal;
 
 const Complaints = () => {
   const { teacherId } = useParams();
   const [complaints, setComplaints] = useState([]);
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('pending');
-  const [className, setClassName] = useState(''); // Optional
-  const [fullname, setFullname] = useState('');   // Optional
+  const [className, setClassName] = useState('');
+  const [fullname, setFullname] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
+  // Fetch complaints from backend
   useEffect(() => {
     const fetchComplaints = async () => {
       setLoading(true);
@@ -179,6 +38,7 @@ const Complaints = () => {
     fetchComplaints();
   }, [teacherId]);
 
+  // Submit a new complaint
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -192,8 +52,8 @@ const Complaints = () => {
       await axios.post(`https://studygrid-backendmongo.onrender.com/complaints/${teacherId}`, {
         description,
         status,
-        class: className, // Optional field
-        fullname,          // Optional field
+        class: className,
+        fullname,
       });
 
       notification.success({ message: 'Complaint submitted successfully!' });
@@ -214,19 +74,30 @@ const Complaints = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      setLoading(true);
-      await axios.delete(`https://studygrid-backendmongo.onrender.com/complaints/${id}`);
-      setComplaints(complaints.filter((complaint) => complaint._id !== id));
-      notification.success({ message: 'Complaint deleted successfully' });
-    } catch (err) {
-      setError('Error deleting complaint');
-      notification.error({ message: 'Error deleting complaint' });
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+  // Confirm before deleting a complaint
+  const showDeleteConfirm = (id) => {
+    confirm({
+      title: 'Are you sure you want to delete this complaint?',
+      icon: <ExclamationCircleOutlined />,
+      content: 'This action cannot be undone.',
+      okText: 'Yes, Delete',
+      okType: 'danger',
+      cancelText: 'Cancel',
+      onOk: async () => {
+        try {
+          setLoading(true);
+          await axios.delete(`https://studygrid-backendmongo.onrender.com/complaints/${id}`);
+          setComplaints(complaints.filter((complaint) => complaint._id !== id));
+          notification.success({ message: 'Complaint deleted successfully' });
+        } catch (err) {
+          setError('Error deleting complaint');
+          notification.error({ message: 'Error deleting complaint' });
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   };
 
   const columns = [
@@ -234,11 +105,19 @@ const Complaints = () => {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
+      align: 'center',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#2C3E50', color: 'white', textAlign: 'center' },
+      }),
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      align: 'center',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#2C3E50', color: 'white', textAlign: 'center' },
+      }),
       render: (status) => (
         <span style={{ color: status === 'resolved' ? 'green' : 'orange' }}>{status}</span>
       ),
@@ -247,44 +126,55 @@ const Complaints = () => {
       title: 'Created At',
       dataIndex: 'created_at',
       key: 'created_at',
+      align: 'center',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#2C3E50', color: 'white', textAlign: 'center' },
+      }),
       render: (text) => <span>{new Date(text).toLocaleString()}</span>,
     },
     {
       title: 'Action',
       key: 'action',
+      align: 'center',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#2C3E50', color: 'white', textAlign: 'center' },
+      }),
       render: (text, record) => (
-        <Button danger icon={<DeleteOutlined />} onClick={() => handleDelete(record._id)}>
+        <Button danger icon={<DeleteOutlined />} onClick={() => showDeleteConfirm(record._id)}>
           Delete
         </Button>
       ),
     },
   ];
+  
 
   return (
-    <div style={{ backgroundColor: '#EAF2F8', padding: '20px' }}>
-      <h1 style={{ color: '#2C3E50' }}>Complaints for Teacher {teacherId}</h1>
+    <div style={{ backgroundColor: '#EAF2F8', padding: '20px', borderRadius: '10px' }}>
+      <h1 style={{ color: '#2C3E50', textAlign: 'center' }}>Complaints for Teacher {teacherId}</h1>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
 
       {/* Button to toggle modal visibility */}
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={() => setModalVisible(true)}
-        style={{ marginBottom: '20px',backgroundColor:"#2C3E50" }}
-      >
-        Add Complaint
-      </Button>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => setModalVisible(true)}
+          style={{ backgroundColor: '#2C3E50' }}
+        >
+          Add Complaint
+        </Button>
+      </div>
 
       {/* Modal for adding complaint */}
       <Modal
         title="Add Complaint"
-        visible={modalVisible}
+        open={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}
         width={600}
       >
-        <Form onSubmitCapture={handleSubmit} layout="vertical" style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px' }}>
+        <Form onSubmitCapture={handleSubmit} layout="vertical" style={{ padding: '20px', borderRadius: '8px' }}>
           <Form.Item label="Description" required>
             <TextArea
               value={description}
@@ -323,27 +213,29 @@ const Complaints = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading}
-              style={{ width: '100%', borderRadius: '5px',backgroundColor:"#2C3E50" }}
-            >
+          <Form.Item style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Button onClick={() => setModalVisible(false)}>Cancel</Button>
+            <Button type="primary" htmlType="submit" loading={loading} style={{ backgroundColor: '#2C3E50' }}>
               Submit
             </Button>
           </Form.Item>
         </Form>
       </Modal>
 
-      <Spin spinning={loading}>
+      {loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+          <Spin size="large" />
+        </div>
+      ) : (
         <Table
           columns={columns}
           dataSource={complaints}
           rowKey="_id"
           pagination={{ pageSize: 5 }}
+          bordered
+          rowClassName={(record, index) => (index % 2 === 0 ? 'even-row' : 'odd-row')}
         />
-      </Spin>
+      )}
     </div>
   );
 };
