@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const { Option } = Select;
 const { useBreakpoint } = Grid;
 
+
 const AdminSubjects = () => {
   const [form] = Form.useForm();
   const [showModal, setShowModal] = useState(false);
@@ -104,22 +105,9 @@ const AdminSubjects = () => {
 
   return (
     <div style={{ backgroundColor: '#EAF2F8', padding: '20px' }}>
-      <h1 style={{ color: '#2C3E50', textAlign: 'center' }}>Subject Management</h1>
+      <h1 style={{ color: '#2C3E50' }}>Subject Management</h1>
 
-      {/* Add New Subject Button */}
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={() => setShowModal(true)} // Show modal when clicked
-        style={{
-          backgroundColor: '#2C3E50',
-          marginBottom: '20px',
-          width: screens.xs ? '100%' : 'auto', // Full width on smaller screens
-        }}
-        disabled={loadingAction}
-      >
-        Add Subject
-      </Button>
+      
 
       {/* Modal for Adding Subject */}
       <Modal
@@ -139,12 +127,32 @@ const AdminSubjects = () => {
             <Input placeholder="Enter Subject Code" />
           </Form.Item>
           <Form.Item
-            label="Subject Name"
-            name="subject_name"
-            rules={[{ required: true, message: 'Please input the subject name!' }]}
-          >
-            <Input placeholder="Enter Subject Name" />
-          </Form.Item>
+  label="Subject Name"
+  name="subject_name"
+  rules={[{ required: true, message: 'Please select a subject!' }]}
+>
+  <Select placeholder="Select Subject">
+    {[
+      "English",
+      "Environmental Studies",
+      "Mathematics",
+      "Mother Tongue",
+      "Computer Basics",
+      "Science",
+      "Social Studies",
+      "Computer Applications",
+      "General Awareness",
+      "Language Skills",
+      "Mathematics Basics",
+      "Numbers and Shapes",
+      "Rhymes and Stories"
+    ].map((subject) => (
+      <Option key={subject} value={subject}>
+        {subject}
+      </Option>
+    ))}
+  </Select>
+</Form.Item>;
           <Form.Item
             label="Class"
             name="class_name"
@@ -180,7 +188,8 @@ const AdminSubjects = () => {
       </Modal>
 
       {/* Class Selection and Fetching Subjects */}
-      <div style={{ marginTop: '20px', textAlign: 'center' }}>
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap',justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
         <Select
           onChange={setSelectedClass}
           value={selectedClass}
@@ -207,6 +216,22 @@ const AdminSubjects = () => {
         >
           Fetch Subjects
         </Button>
+        </div>
+        {/* Add New Subject Button */}
+      <Button
+        type="primary"
+        icon={<PlusOutlined />}
+        onClick={() => setShowModal(true)} // Show modal when clicked
+        style={{
+          backgroundColor: '#2C3E50',
+          marginBottom: '20px',
+          width: screens.xs ? '100%' : 'auto', // Full width on smaller screens
+        }}
+        disabled={loadingAction}
+      >
+        Add Subject
+      </Button>
+
       </div>
 
       {/* Subjects Table */}

@@ -283,7 +283,7 @@ const AdminComplaints = () => {
 
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center', color: '#2C3E50' }}>Complaint Management</h1>
+      <h1 style={{color: '#2C3E50' }}>Complaint Management</h1>
       <ToastContainer position="top-right" autoClose={3000} />
 
       {loading ? (
