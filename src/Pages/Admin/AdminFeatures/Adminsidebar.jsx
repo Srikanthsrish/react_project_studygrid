@@ -100,7 +100,7 @@ const AdminSidebar = ({ isSidebarOpen }) => {
     { path: `/admin/dashboard/${admin_id}/teachers`, icon: <TeachersIcon />, label: "Teachers" },
     { path: `/admin/dashboard/${admin_id}/subjects`, icon: <SubjectsIcon />, label: "Subjects" },
     { path: `/admin/dashboard/${admin_id}/classes`, icon: <ClassesIcon />, label: "Classes" },
-    { path: `/admin/dashboard/${admin_id}/notices`, icon: <NoticesIcon />, label: "Notices" },
+    { path: `/admin/dashboard/${admin_id}/announcement`, icon: <NoticesIcon />, label: "Announcement" },
     { path: `/admin/dashboard/${admin_id}/complains`, icon: <ComplainsIcon />, label: "Complains" },
     { path: `/admin/dashboard/${admin_id}/profile`, icon: <ProfileIcon />, label: "Profile" },
     { path: `/admin/dashboard/${admin_id}/logout`, icon: <LogoutIcon />, label: "Logout" },

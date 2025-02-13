@@ -72,17 +72,17 @@ const AdminSubjects = () => {
   };
 
   const columns = [
-    { 
-      title: 'Subject Code', 
-      dataIndex: 'subject_code', 
+    {
+      title: 'Subject Code',
+      dataIndex: 'subject_code',
       key: 'subject_code',
-      onHeaderCell: () => ({ style: { backgroundColor: '#2C3E50', color: 'white' } }) 
+      onHeaderCell: () => ({ style: { backgroundColor: '#2C3E50', color: 'white' } })
     },
-    { 
-      title: 'Subject Name', 
-      dataIndex: 'subject_name', 
+    {
+      title: 'Subject Name',
+      dataIndex: 'subject_name',
       key: 'subject_name',
-      onHeaderCell: () => ({ style: { backgroundColor: '#2C3E50', color: 'white' } }) 
+      onHeaderCell: () => ({ style: { backgroundColor: '#2C3E50', color: 'white' } })
     },
     {
       title: 'Action',
@@ -101,13 +101,13 @@ const AdminSubjects = () => {
       ),
     },
   ];
-  
+
 
   return (
     <div style={{ backgroundColor: '#EAF2F8', padding: '20px' }}>
       <h1 style={{ color: '#2C3E50' }}>Subject Management</h1>
 
-      
+
 
       {/* Modal for Adding Subject */}
       <Modal
@@ -127,32 +127,32 @@ const AdminSubjects = () => {
             <Input placeholder="Enter Subject Code" />
           </Form.Item>
           <Form.Item
-  label="Subject Name"
-  name="subject_name"
-  rules={[{ required: true, message: 'Please select a subject!' }]}
->
-  <Select placeholder="Select Subject">
-    {[
-      "English",
-      "Environmental Studies",
-      "Mathematics",
-      "Mother Tongue",
-      "Computer Basics",
-      "Science",
-      "Social Studies",
-      "Computer Applications",
-      "General Awareness",
-      "Language Skills",
-      "Mathematics Basics",
-      "Numbers and Shapes",
-      "Rhymes and Stories"
-    ].map((subject) => (
-      <Option key={subject} value={subject}>
-        {subject}
-      </Option>
-    ))}
-  </Select>
-</Form.Item>;
+            label="Subject Name"
+            name="subject_name"
+            rules={[{ required: true, message: 'Please select a subject!' }]}
+          >
+            <Select placeholder="Select Subject">
+              {[
+                "English",
+                "Environmental Studies",
+                "Mathematics",
+                "Mother Tongue",
+                "Computer Basics",
+                "Science",
+                "Social Studies",
+                "Computer Applications",
+                "General Awareness",
+                "Language Skills",
+                "Mathematics Basics",
+                "Numbers and Shapes",
+                "Rhymes and Stories"
+              ].map((subject) => (
+                <Option key={subject} value={subject}>
+                  {subject}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
           <Form.Item
             label="Class"
             name="class_name"
@@ -188,49 +188,50 @@ const AdminSubjects = () => {
       </Modal>
 
       {/* Class Selection and Fetching Subjects */}
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap',justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-        <Select
-          onChange={setSelectedClass}
-          value={selectedClass}
-          style={{
-            width: 200,
-            marginBottom: '20px',
-          }}
-          placeholder="Select Class"
-        >
-          {['1st', '2nd', '3rd', '4th', '5th', 'UKG', 'LKG'].map((grade) => (
-            <Option key={grade} value={grade}>
-              {grade}
-            </Option>
-          ))}
-        </Select>
+          <Select
+            onChange={setSelectedClass}
+            value={selectedClass || undefined}
+            placeholder="Select class"
+            style={{
+              width: 200,
+              marginBottom: '20px',
+            }}
+            
+          >
+            {['1st', '2nd', '3rd', '4th', '5th', 'UKG', 'LKG'].map((grade) => (
+              <Option key={grade} value={grade}>
+                {grade}
+              </Option>
+            ))}
+          </Select>
+          <Button
+            type="primary"
+            onClick={fetchSubjects}
+            style={{
+              backgroundColor: '#2C3E50',
+              width: screens.xs ? '100%' : 'auto', // Full width on smaller screens
+            }}
+            disabled={loadingAction}
+          >
+            Fetch Subjects
+          </Button>
+        </div>
+        {/* Add New Subject Button */}
         <Button
           type="primary"
-          onClick={fetchSubjects}
+          icon={<PlusOutlined />}
+          onClick={() => setShowModal(true)} // Show modal when clicked
           style={{
             backgroundColor: '#2C3E50',
+            marginBottom: '20px',
             width: screens.xs ? '100%' : 'auto', // Full width on smaller screens
           }}
           disabled={loadingAction}
         >
-          Fetch Subjects
+          Add Subject
         </Button>
-        </div>
-        {/* Add New Subject Button */}
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={() => setShowModal(true)} // Show modal when clicked
-        style={{
-          backgroundColor: '#2C3E50',
-          marginBottom: '20px',
-          width: screens.xs ? '100%' : 'auto', // Full width on smaller screens
-        }}
-        disabled={loadingAction}
-      >
-        Add Subject
-      </Button>
 
       </div>
 

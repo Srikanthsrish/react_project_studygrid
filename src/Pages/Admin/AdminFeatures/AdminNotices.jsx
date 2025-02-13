@@ -80,7 +80,7 @@ const AdminNotices = () => {
 
   return (
     <div style={{ padding: "20px", backgroundColor: "#EAF2F8", borderRadius: 10 }}>
-      <h2 style={{ color: "#2C3E50" }}>Notice Management</h2>
+      <h2 style={{ color: "#2C3E50" }}>Announcements</h2>
       <Button
         type="primary"
         onClick={() => setShowFormModal(true)}

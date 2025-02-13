@@ -105,7 +105,7 @@ const AdminDashboard = () => {
             <Route path="teachers" element={<AdminAddTeachers />} />
             <Route path="subjects" element={<AdminSubjects />} />
             <Route path="classes" element={<TeacherSubjectAllocation />} />
-            <Route path="notices" element={<AdminNotices />} />
+            <Route path="announcement" element={<AdminNotices />} />
             <Route path="complains" element={<AdminComplaints />} />
             <Route path="profile" element={<AdminProfile />} />
             <Route path="logout" element={<Logout />} />

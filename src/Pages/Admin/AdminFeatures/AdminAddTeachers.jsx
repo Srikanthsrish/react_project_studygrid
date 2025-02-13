@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Form, Input, Modal, message, Grid, Spin } from 'antd';
-import { DeleteOutlined, PlusOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
+import { Table, Button, Form, Input, Modal, message, Grid, Spin,Select } from 'antd';
+import { DeleteOutlined, PlusOutlined, LoadingOutlined, EditOutlined,SearchOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
 const { confirm } = Modal;
+const {Option}=Select;
 
 const AdminAddTeachers = () => {
     const [teachers, setTeachers] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [loadingData, setLoadingData] = useState(false);
     const [loadingAction, setLoadingAction] = useState(false);
+    const [editingTeacher, setEditingTeacher] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [form] = Form.useForm();
     const screens = useBreakpoint();
+    const [editForm] = Form.useForm();
 
     useEffect(() => {
         fetchTeachers();
@@ -34,12 +38,16 @@ const AdminAddTeachers = () => {
     const handleAddTeacher = async (values) => {
         setLoadingAction(true);
         try {
+            
+    
             const response = await axios.post('https://studygrid-backendmongo.onrender.com/api/teachers', values, {
                 headers: { 'Content-Type': 'application/json' },
             });
-
+    
+            console.log("Server Response:", response.data); // Log response
+    
             if (response.data && response.data.teacher) {
-                setTeachers(prev => [...prev, response.data.teacher]); // Ensure response structure
+                setTeachers(prev => [...prev, response.data.teacher]);
                 message.success('Teacher added successfully!');
                 form.resetFields();
                 setIsModalVisible(false);
@@ -47,12 +55,43 @@ const AdminAddTeachers = () => {
                 message.error('Unexpected response from server');
             }
         } catch (error) {
+           
             message.error(error.response?.data?.message || 'Failed to add teacher');
         } finally {
             setLoadingAction(false);
         }
     };
+    const handleEditTeacher = async (values) => {
+        setLoadingAction(true);
+        try {
+            const response = await axios.put(`https://studygrid-backendmongo.onrender.com/api/teachers/${editingTeacher.teacherId}`, values);
+            if (response.data && response.data.teacher) {
+                setTeachers(prev =>
+                    prev.map(teacher => (teacher.teacherId === editingTeacher.teacherId ? response.data.teacher : teacher))
+                );
+                message.success('Teacher updated successfully!');
+                setIsEditModalVisible(false);
+            } else {
+                message.error('Unexpected response from server');
+            }
+        } catch (error) {
+            message.error(error.response?.data?.message || 'Failed to update teacher');
+        } finally {
+            setLoadingAction(false);
+        }
+    };
 
+    const showEditModal = (teacher) => {
+        setEditingTeacher(teacher);
+        editForm.setFieldsValue({
+            teacherId: teacher.teacherId,
+            name: teacher.name,
+            email: teacher.email,
+            gender: teacher.gender
+        });
+        setIsEditModalVisible(true);
+    };
+    
     const showDeleteConfirm = (teacherId) => {
         confirm({
             title: 'Are you sure you want to delete this teacher?',
@@ -123,6 +162,13 @@ const AdminAddTeachers = () => {
                     <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please enter email' }, { type: 'email', message: 'Enter a valid email' }]}> 
                         <Input placeholder="Enter email" /> 
                     </Form.Item>
+                    <Form.Item label="gender" name="gender" rules={[{ required: true, message: 'Please enter gender' }]}> 
+                    <Select placeholder="Select gender">
+                            <Option value="Male">Male</Option>
+                            <Option value="Female">Female</Option>
+                    </Select>
+                    </Form.Item>
+                    
                     <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please enter password' }]}> 
                         <Input.Password placeholder="Enter password" /> 
                     </Form.Item>
@@ -138,6 +184,32 @@ const AdminAddTeachers = () => {
                     </Form.Item>
                 </Form>
             </Modal>
+            {/* Edit Teacher Modal */}
+            <Modal title="Edit Teacher" open={isEditModalVisible} onCancel={() => setIsEditModalVisible(false)} footer={null}>
+                <Form form={editForm} layout="vertical" onFinish={handleEditTeacher}>
+                    <Form.Item label="Teacher ID" name="teacherId">
+                        <Input disabled />
+                    </Form.Item>
+                    <Form.Item label="Full Name" name="name" rules={[{ required: true, message: 'Please enter full name' }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label="Email" name="email" rules={[{ required: true, type: 'email', message: 'Enter a valid email' }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label="Gender" name="gender" rules={[{ required: true, message: 'Please select gender' }]}>
+                        <Select>
+                            <Option value="Male">Male</Option>
+                            <Option value="Female">Female</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" loading={loadingAction} style={{ backgroundColor: '#2C3E50' }}>
+                            Update Teacher
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
+
 
             {loadingData ? (
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
@@ -163,6 +235,11 @@ const AdminAddTeachers = () => {
                      onHeaderCell={() => ({
                         style: { backgroundColor: '#2C3E50', color: 'white'  },
                     })} />
+                    <Table.Column title="gender" dataIndex="gender" key="gender" align="center"
+                     onHeaderCell={() => ({
+                        style: { backgroundColor: '#2C3E50', color: 'white'  },
+                    })} />
+
                     <Table.Column
                         title="Action"
                         key="action"
@@ -171,9 +248,13 @@ const AdminAddTeachers = () => {
                             style: { backgroundColor: '#2C3E50', color: 'white'  },
                         })}
                         render={(_, record) => (
+                            <>
+                            <Button icon={<EditOutlined />} onClick={() => showEditModal(record)}> Edit </Button>
                             <Button type="primary" danger icon={<DeleteOutlined />} onClick={() => showDeleteConfirm(record.teacherId)}> 
                                 Delete 
                             </Button>
+                            </>
+
                         )}
                     />
                 </Table>
