@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Form, Input, Modal, message, Grid, Spin,Select } from 'antd';
-import { DeleteOutlined, PlusOutlined, LoadingOutlined, EditOutlined,SearchOutlined } from '@ant-design/icons';
+import { Table, Button, Form, Input, Modal, message, Grid, Spin, Select } from 'antd';
+import { DeleteOutlined, PlusOutlined, LoadingOutlined, EditOutlined, SearchOutlined, EyeOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
 const { confirm } = Modal;
-const {Option}=Select;
+const { Option } = Select;
 
 const AdminAddTeachers = () => {
     const [teachers, setTeachers] = useState([]);
@@ -13,6 +13,8 @@ const AdminAddTeachers = () => {
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [loadingData, setLoadingData] = useState(false);
     const [loadingAction, setLoadingAction] = useState(false);
+    const [isViewModalVisible, setIsViewModalVisible] = useState(false);
+    const [viewingTeacher, setViewingTeacher] = useState(null);
     const [editingTeacher, setEditingTeacher] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [form] = Form.useForm();
@@ -38,14 +40,14 @@ const AdminAddTeachers = () => {
     const handleAddTeacher = async (values) => {
         setLoadingAction(true);
         try {
-            
-    
+
+
             const response = await axios.post('https://studygrid-backendmongo.onrender.com/api/teachers', values, {
                 headers: { 'Content-Type': 'application/json' },
             });
-    
+
             console.log("Server Response:", response.data); // Log response
-    
+
             if (response.data && response.data.teacher) {
                 setTeachers(prev => [...prev, response.data.teacher]);
                 message.success('Teacher added successfully!');
@@ -55,7 +57,7 @@ const AdminAddTeachers = () => {
                 message.error('Unexpected response from server');
             }
         } catch (error) {
-           
+
             message.error(error.response?.data?.message || 'Failed to add teacher');
         } finally {
             setLoadingAction(false);
@@ -91,7 +93,7 @@ const AdminAddTeachers = () => {
         });
         setIsEditModalVisible(true);
     };
-    
+
     const showDeleteConfirm = (teacherId) => {
         confirm({
             title: 'Are you sure you want to delete this teacher?',
@@ -118,17 +120,20 @@ const AdminAddTeachers = () => {
         teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         teacher.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
-
+    const showViewModal = (teacher) => {
+        setViewingTeacher(teacher);
+        setIsViewModalVisible(true);
+    };
     return (
         <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-            
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h1 style={{ color: '#2C3E50' }}>Teachers Management</h1>
                 <h2 style={{ color: '#2C3E50' }}>Total Teachers : {teachers.length}</h2>
             </div>
-            
+
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-                
+
                 <Input
                     placeholder="Search Teachers"
                     prefix={<SearchOutlined />}
@@ -153,32 +158,32 @@ const AdminAddTeachers = () => {
                 footer={null}
             >
                 <Form form={form} layout="vertical" onFinish={handleAddTeacher}>
-                    <Form.Item label="Teacher ID" name="teacherId" rules={[{ required: true, message: 'Please enter Teacher ID' }]}> 
-                        <Input placeholder="Enter Teacher ID" /> 
+                    <Form.Item label="Teacher ID" name="teacherId" rules={[{ required: true, message: 'Please enter Teacher ID' }]}>
+                        <Input placeholder="Enter Teacher ID" />
                     </Form.Item>
-                    <Form.Item label="Full Name" name="name" rules={[{ required: true, message: 'Please enter full name' }]}> 
-                        <Input placeholder="Enter full name" /> 
+                    <Form.Item label="Full Name" name="name" rules={[{ required: true, message: 'Please enter full name' }]}>
+                        <Input placeholder="Enter full name" />
                     </Form.Item>
-                    <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please enter email' }, { type: 'email', message: 'Enter a valid email' }]}> 
-                        <Input placeholder="Enter email" /> 
+                    <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please enter email' }, { type: 'email', message: 'Enter a valid email' }]}>
+                        <Input placeholder="Enter email" />
                     </Form.Item>
-                    <Form.Item label="gender" name="gender" rules={[{ required: true, message: 'Please enter gender' }]}> 
-                    <Select placeholder="Select gender">
+                    <Form.Item label="gender" name="gender" rules={[{ required: true, message: 'Please enter gender' }]}>
+                        <Select placeholder="Select gender">
                             <Option value="Male">Male</Option>
                             <Option value="Female">Female</Option>
-                    </Select>
+                        </Select>
                     </Form.Item>
-                    
-                    <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please enter password' }]}> 
-                        <Input.Password placeholder="Enter password" /> 
+
+                    <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please enter password' }]}>
+                        <Input.Password placeholder="Enter password" />
                     </Form.Item>
                     <Form.Item>
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <Button type="primary" htmlType="submit" disabled={loadingAction} style={{ backgroundColor: '#2C3E50', flex: 1, marginRight: '10px' }}> 
-                                {loadingAction ? <Spin indicator={<LoadingOutlined />} /> : 'Add Teacher'} 
+                            <Button type="primary" htmlType="submit" disabled={loadingAction} style={{ backgroundColor: '#2C3E50', flex: 1, marginRight: '10px' }}>
+                                {loadingAction ? <Spin indicator={<LoadingOutlined />} /> : 'Add Teacher'}
                             </Button>
-                            <Button onClick={() => setIsModalVisible(false)} disabled={loadingAction} style={{ backgroundColor: 'red', color: '#FFFFFF', flex: 1 }}> 
-                                Cancel 
+                            <Button onClick={() => setIsModalVisible(false)} disabled={loadingAction} style={{ backgroundColor: 'red', color: '#FFFFFF', flex: 1 }}>
+                                Cancel
                             </Button>
                         </div>
                     </Form.Item>
@@ -209,7 +214,17 @@ const AdminAddTeachers = () => {
                     </Form.Item>
                 </Form>
             </Modal>
-
+            {/* View Teacher Modal */}
+            <Modal title="Teacher Details" open={isViewModalVisible} onCancel={() => setIsViewModalVisible(false)} footer={null}>
+                {viewingTeacher && (
+                    <div>
+                        <p><strong>Teacher ID:</strong> {viewingTeacher.teacherId}</p>
+                        <p><strong>Name:</strong> {viewingTeacher.name}</p>
+                        <p><strong>Email:</strong> {viewingTeacher.email}</p>
+                        <p><strong>Gender:</strong> {viewingTeacher.gender}</p>
+                    </div>
+                )}
+            </Modal>
 
             {loadingData ? (
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
@@ -223,36 +238,52 @@ const AdminAddTeachers = () => {
                     pagination={{ pageSize: 5 }}
                     style={{ backgroundColor: '#EAF2F8', marginTop: '20px' }}
                 >
-                    <Table.Column title="Teacher ID" dataIndex="teacherId" key="teacherId" align="center"
+                    {/* <Table.Column title="Teacher ID" dataIndex="teacherId" key="teacherId" align="center"
                      onHeaderCell={() => ({
                         style: { backgroundColor: '#2C3E50', color: 'white'  },
-                    })} />
-                    <Table.Column title="Name" dataIndex="name" key="name" align="center" 
-                     onHeaderCell={() => ({
-                        style: { backgroundColor: '#2C3E50', color: 'white'  },
-                    })}/>
-                    <Table.Column title="Email" dataIndex="email" key="email" align="center"
-                     onHeaderCell={() => ({
-                        style: { backgroundColor: '#2C3E50', color: 'white'  },
-                    })} />
-                    <Table.Column title="gender" dataIndex="gender" key="gender" align="center"
-                     onHeaderCell={() => ({
-                        style: { backgroundColor: '#2C3E50', color: 'white'  },
-                    })} />
+                    })} /> */}
+                    <Table.Column title="Name" dataIndex="name" key="name"
+                        onHeaderCell={() => ({
+                            style: { backgroundColor: '#2C3E50', color: 'white' },
+                        })} />
+                    <Table.Column title="Email" dataIndex="email" key="email"
+                        onHeaderCell={() => ({
+                            style: { backgroundColor: '#2C3E50', color: 'white' },
+                        })} />
+                    <Table.Column title="gender" dataIndex="gender" key="gender"
+                        onHeaderCell={() => ({
+                            style: { backgroundColor: '#2C3E50', color: 'white' },
+                        })} />
 
                     <Table.Column
                         title="Action"
                         key="action"
-                        align="center"
+
                         onHeaderCell={() => ({
-                            style: { backgroundColor: '#2C3E50', color: 'white'  },
+                            style: { backgroundColor: '#2C3E50', color: 'white' },
                         })}
                         render={(_, record) => (
                             <>
-                            <Button icon={<EditOutlined />} onClick={() => showEditModal(record)}> Edit </Button>
-                            <Button type="primary" danger icon={<DeleteOutlined />} onClick={() => showDeleteConfirm(record.teacherId)}> 
-                                Delete 
-                            </Button>
+                                <Button
+                                    type="text"
+                                    icon={<DeleteOutlined style={{ color: "red" }} />}
+                                    onClick={() => showDeleteConfirm(record.teacherId)}
+                                />
+
+                                {/* <EditOutlined style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }} onClick={() => handleEditStudent(record)} /> */}
+
+
+                                <EditOutlined
+                                    style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }}
+                                    onClick={() => showEditModal(record)}
+                                />
+
+                                <Button
+                                    type="text"
+                                    icon={<EyeOutlined style={{ color: "yellow" }} />}
+                                    onClick={() => showViewModal(record)}
+                                />
+                               
                             </>
 
                         )}

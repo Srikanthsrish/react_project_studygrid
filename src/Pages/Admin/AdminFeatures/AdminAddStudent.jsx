@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, Button, Form, Input, Modal, message, Grid, Spin, Select } from 'antd';
-import { DeleteOutlined, PlusOutlined, LoadingOutlined, SearchOutlined ,EditOutlined} from '@ant-design/icons';
+import { DeleteOutlined, PlusOutlined, LoadingOutlined, SearchOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
 const { confirm } = Modal;
@@ -14,12 +14,14 @@ const AdminAddStudent = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [editingStudent, setEditingStudent] = useState(null);
+    const [isViewModalVisible, setIsViewModalVisible] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState(null);
     const [loadingData, setLoadingData] = useState(true);
     const [loadingAction, setLoadingAction] = useState(false);
     const [form] = Form.useForm();
     const [editForm] = Form.useForm();
     const screens = useBreakpoint();
-    
+
 
     useEffect(() => {
         fetchStudents();
@@ -115,7 +117,11 @@ const AdminAddStudent = () => {
             setLoadingAction(false);
         }
     };
-    
+    const handleViewStudent = (student) => {
+        setSelectedStudent(student);
+        setIsViewModalVisible(true);
+    };
+
 
     return (
         <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
@@ -123,8 +129,8 @@ const AdminAddStudent = () => {
                 <h1 style={{ color: '#2C3E50' }}>Student Management</h1>
                 <h2 style={{ color: '#2C3E50' }}>Total Students: {students.length}</h2>
             </div>
-            
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap',justifyContent: 'space-between', alignItems: 'center' }}>
+
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Input
                     prefix={<SearchOutlined />}
                     placeholder="Search by name"
@@ -166,10 +172,10 @@ const AdminAddStudent = () => {
                         </Select>
                     </Form.Item>
                     <Form.Item label="gender" name="gender" rules={[{ required: true, message: 'Please select a gender' }]}>
-                    <Select placeholder="Select gender">
+                        <Select placeholder="Select gender">
                             <Option value="Male">Male</Option>
                             <Option value="Female">Female</Option>
-                    </Select>
+                        </Select>
                     </Form.Item>
                     <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please enter password' }]}>
                         <Input.Password placeholder="Enter password" />
@@ -217,78 +223,100 @@ const AdminAddStudent = () => {
                     </Form.Item>
                 </Form>
             </Modal>
+            <Modal
+                title="Student Details"
+                open={isViewModalVisible}
+                onCancel={() => setIsViewModalVisible(false)}
+                footer={null}
+            >
+                {selectedStudent && (
+                    <div>
+                        <p><strong>Full Name:</strong> {selectedStudent.fullName}</p>
+                        <p><strong>Class:</strong> {selectedStudent.class}</p>
+                        <p><strong>Gender:</strong> {selectedStudent.gender}</p>
+                    </div>
+                )}
+            </Modal>
 
             {loadingData ? (
                 <Spin indicator={<LoadingOutlined style={{ fontSize: 36 }} spin />} />
             ) : (
                 <Table
-    dataSource={filteredStudents}
-    rowKey="_id"
-    bordered
-    pagination={{ pageSize: 5 }}
-    scroll={{ x: screens.xs ? 600 : 'auto' }}
->
-    <Table.Column
-        title="Index"
-        dataIndex="index"
-        key="index"
-        align="center"
-        render={(_, __, index) => index + 1} // Adding index dynamically
-        onHeaderCell={() => ({
-            style: { backgroundColor: '#2C3E50', color: 'white' },
-        })}
-    />
-    <Table.Column
-        title="Full Name"
-        dataIndex="fullName"
-        key="fullName"
-        align="center"
-        onHeaderCell={() => ({
-            style: { backgroundColor: '#2C3E50', color: 'white' },
-        })}
-    />
-    <Table.Column
-        title="Class"
-        dataIndex="class"
-        key="class"
-        align="center"
-        onHeaderCell={() => ({
-            style: { backgroundColor: '#2C3E50', color: 'white' },
-        })}
-    />
-    <Table.Column
-        title="Gender"
-        dataIndex="gender"
-        key="gender"
-        align="center"
-        onHeaderCell={() => ({
-            style: { backgroundColor: '#2C3E50', color: 'white' },
-        })}
-    />
-    <Table.Column
-        title="Action"
-        key="actions"
-        align="center"
-        onHeaderCell={() => ({
-            style: { backgroundColor: '#2C3E50', color: 'white' },
-        })}
-        render={(_, record) => (
-            <>
-                <Button
-                    type="default"
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => handleDeleteStudent(record._id)}
+                    dataSource={filteredStudents}
+                    rowKey="_id"
+                    bordered
+                    pagination={{ pageSize: 5 }}
+                    scroll={{ x: screens.xs ? 600 : 'auto' }}
                 >
-                    Delete
-                </Button>
-                <Button icon={<EditOutlined />} onClick={() => handleEditStudent(record)}>
-                    Edit
-                </Button>
-            </>
-        )}
-    />
-</Table>
+                    <Table.Column
+                        title="Index"
+                        dataIndex="index"
+                        key="index"
+
+                        render={(_, __, index) => index + 1} // Adding index dynamically
+                        onHeaderCell={() => ({
+                            style: { backgroundColor: '#2C3E50', color: 'white' },
+                        })}
+                    />
+                    <Table.Column
+                        title="Full Name"
+                        dataIndex="fullName"
+                        key="fullName"
+
+                        onHeaderCell={() => ({
+                            style: { backgroundColor: '#2C3E50', color: 'white' },
+                        })}
+                    />
+                    <Table.Column
+                        title="Class"
+                        dataIndex="class"
+                        key="class"
+                        onHeaderCell={() => ({
+                            style: { backgroundColor: '#2C3E50', color: 'white' },
+                        })}
+                    />
+                    <Table.Column
+                        title="Gender"
+                        dataIndex="gender"
+                        key="gender"
+
+                        onHeaderCell={() => ({
+                            style: { backgroundColor: '#2C3E50', color: 'white' },
+                        })}
+                    />
+                    <Table.Column
+                        title="Action"
+                        key="actions"
+
+                        onHeaderCell={() => ({
+                            style: { backgroundColor: '#2C3E50', color: 'white' },
+                        })}
+                        render={(_, record) => (
+                            <>
+                                <Button
+                                    type="text"
+                                    icon={<DeleteOutlined style={{ color: "red" }} />}
+                                    onClick={() => handleDeleteStudent(record._id)}
+                                />
+
+                                {/* <EditOutlined style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }} onClick={() => handleEditStudent(record)} /> */}
+                                
+
+                                <EditOutlined
+                                    style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }}
+                                    onClick={() => handleEditStudent(record)}
+                                />
+
+                                <Button
+                                    type="text"
+                                    icon={<EyeOutlined style={{ color: "yellow" }} />}
+                                    onClick={() => handleViewStudent(record)}
+                                />
+
+                            </>
+                        )}
+                    />
+                </Table>
 
             )}
         </div>

@@ -11,7 +11,7 @@ import {
   message,
   Grid,
 } from "antd";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { ExclamationCircleOutlined ,EditOutlined} from "@ant-design/icons";
 import "antd/dist/reset.css";
 
 const { Option } = Select;
@@ -22,7 +22,9 @@ const AdminNotices = () => {
   const [form] = Form.useForm();
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
+  const [selectedNotice, setSelectedNotice] = useState(null);
   const screens = useBreakpoint();
 
   useEffect(() => {
@@ -76,6 +78,19 @@ const AdminNotices = () => {
         }
       },
     });
+  };
+  const handleEditSubmit = async (values) => {
+    setLoading(true);
+    try {
+      await axios.put(`https://studygrid-backendmongo.onrender.com/api/notices/${selectedNotice._id}`, values);
+      message.success("Notice updated successfully!");
+      setShowEditModal(false);
+      fetchNotices();
+    } catch (error) {
+      message.error("Failed to update notice.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -159,6 +174,35 @@ const AdminNotices = () => {
           </Form.Item>
         </Form>
       </Modal>
+      {/* Edit Notice Modal */}
+      <Modal
+        title="Edit Notice"
+        visible={showEditModal}
+        onCancel={() => setShowEditModal(false)}
+        footer={null}
+        width={screens.xs ? "90%" : 600}
+      >
+        <Form
+          layout="vertical"
+          onFinish={handleEditSubmit}
+          initialValues={selectedNotice}
+          key={selectedNotice?._id} // To reinitialize form when modal opens
+        >
+          <Form.Item label="Title" name="title" rules={[{ required: true, message: "Please enter the title!" }]}>
+            <Input placeholder="Enter title" />
+          </Form.Item>
+
+          <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please enter a description!" }]}>
+            <Input.TextArea rows={3} placeholder="Enter description" />
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" style={{ backgroundColor: "#2C3E50", borderColor: "#2C3E50" }}>
+              Update Notice
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
 
       {loading ? (
         <Spin size="large" />
@@ -199,9 +243,22 @@ const AdminNotices = () => {
             key="actions"
             onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })}
             render={(_, record) => (
+              <><Button
+              icon={<EditOutlined />}
+              onClick={() => {
+                setSelectedNotice(record);
+                setShowEditModal(true);
+              }}
+              style={{ marginRight: 8 }}
+            >
+              Edit
+            </Button>
               <Button danger onClick={() => handleDeleteNotice(record._id)}>
                 Delete
               </Button>
+              
+                
+                </>
             )}
           />
         </Table>

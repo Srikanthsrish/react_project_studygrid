@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Input, Select, Table, Form, message, Modal, Spin, Grid } from 'antd';
 import { ToastContainer, toast } from 'react-toastify';
-import { PlusOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, LoadingOutlined, EditOutlined,EyeOutlined } from '@ant-design/icons';
 import 'react-toastify/dist/ReactToastify.css';
 
 const { Option } = Select;
@@ -10,13 +10,20 @@ const { useBreakpoint } = Grid;
 
 
 const AdminSubjects = () => {
-  const [form] = Form.useForm();
+
   const [showModal, setShowModal] = useState(false);
   const [selectedClass, setSelectedClass] = useState('');
+  const [editModal, setEditModal] = useState(false);
+  const [editingSubject, setEditingSubject] = useState(null);
+  const [viewModal, setViewModal] = useState(false);
+  const [viewSubject, setViewSubject] = useState(null);
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingAction, setLoadingAction] = useState(false);
   const screens = useBreakpoint();
+  const [form] = Form.useForm();
+  const [editForm] = Form.useForm();
+
 
   const fetchSubjects = async () => {
     if (!selectedClass) {
@@ -33,6 +40,35 @@ const AdminSubjects = () => {
       setLoading(false);
     }
   };
+
+  const handleEdit = (record) => {
+    setEditingSubject(record);
+    editForm.setFieldsValue(record);
+    setEditModal(true);
+  };
+
+  const handleUpdate = async (values) => {
+    if (!editingSubject) {
+      toast.error('No subject selected for editing');
+      return;
+    }
+  
+    setLoadingAction(true);
+    try {
+      await axios.put(
+        `https://studygrid-backendmongo.onrender.com/api/subjects/${editingSubject.subject_code}`,
+        values
+      );
+      toast.success('Subject updated successfully');
+      setEditModal(false);
+      fetchSubjects();
+    } catch (error) {
+      toast.error('Error updating subject');
+    } finally {
+      setLoadingAction(false);
+    }
+  };
+  
 
   const handleSubmit = async (values) => {
     setLoadingAction(true);
@@ -89,15 +125,21 @@ const AdminSubjects = () => {
       key: 'action',
       onHeaderCell: () => ({ style: { backgroundColor: '#2C3E50', color: 'white' } }),
       render: (_, record) => (
-        <Button
-          type="link"
-          onClick={() => handleDelete(record.subject_code)}
-          icon={loadingAction ? <LoadingOutlined /> : <DeleteOutlined />}
-          style={{ color: 'red' }}
-          disabled={loadingAction}
-        >
-          {loadingAction ? 'Deleting...' : 'Delete'}
-        </Button>
+        <>
+        <Button type="link" onClick={() => handleView(record)} icon={<EyeOutlined />}>View</Button>
+          <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined />}>
+            Edit
+          </Button>
+          <Button
+            type="link"
+            onClick={() => handleDelete(record.subject_code)}
+            icon={loadingAction ? <LoadingOutlined /> : <DeleteOutlined />}
+            style={{ color: 'red' }}
+            disabled={loadingAction}
+          >
+            {loadingAction ? 'Deleting...' : 'Delete'}
+          </Button>
+        </>
       ),
     },
   ];
@@ -186,6 +228,53 @@ const AdminSubjects = () => {
           </Form.Item>
         </Form>
       </Modal>
+      {/* Edit Subject Modal */}
+<Modal title="Edit Subject" open={editModal} onCancel={() => setEditModal(false)} footer={null}>
+  <Form form={editForm} onFinish={handleUpdate} layout="vertical">
+    {/* Subject Code */}
+    <Form.Item label="Subject Code" name="subject_code" rules={[{ required: true, message: 'Please enter subject code' }]}>
+      <Input placeholder="Enter Subject Code" />
+    </Form.Item>
+
+    {/* Subject Name */}
+    <Form.Item label="Subject Name" name="subject_name" rules={[{ required: true, message: 'Please select a subject' }]}>
+      <Select placeholder="Select Subject">
+        {[
+          "English", "Environmental Studies", "Mathematics", "Mother Tongue",
+          "Computer Basics", "Science", "Social Studies", "Computer Applications",
+          "General Awareness", "Language Skills", "Mathematics Basics",
+          "Numbers and Shapes", "Rhymes and Stories"
+        ].map(subject => (
+          <Select.Option key={subject} value={subject}>{subject}</Select.Option>
+        ))}
+      </Select>
+    </Form.Item>
+
+    {/* Submit Button */}
+    <Form.Item>
+      <Button type="primary" htmlType="submit" loading={loadingAction}>
+        Update
+      </Button>
+    </Form.Item>
+  </Form>
+</Modal>
+{/* View Subject Modal */}
+<Modal
+        title="Subject Details"
+        open={viewModal}
+        onCancel={() => setViewModal(false)}
+        footer={null}
+      >
+        {viewSubject && (
+          <div>
+            <p><strong>Subject Code:</strong> {viewSubject.subject_code}</p>
+            <p><strong>Subject Name:</strong> {viewSubject.subject_name}</p>
+            <p><strong>Class:</strong> {viewSubject.class_name}</p>
+          </div>
+        )}
+      </Modal>
+
+
 
       {/* Class Selection and Fetching Subjects */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -198,7 +287,7 @@ const AdminSubjects = () => {
               width: 200,
               marginBottom: '20px',
             }}
-            
+
           >
             {['1st', '2nd', '3rd', '4th', '5th', 'UKG', 'LKG'].map((grade) => (
               <Option key={grade} value={grade}>
