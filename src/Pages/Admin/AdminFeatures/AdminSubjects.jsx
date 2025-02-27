@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Input, Select, Table, Form, message, Modal, Spin, Grid } from 'antd';
 import { ToastContainer, toast } from 'react-toastify';
-import { PlusOutlined, DeleteOutlined, LoadingOutlined, EditOutlined,EyeOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, LoadingOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import 'react-toastify/dist/ReactToastify.css';
 
 const { Option } = Select;
@@ -52,7 +52,7 @@ const AdminSubjects = () => {
       toast.error('No subject selected for editing');
       return;
     }
-  
+
     setLoadingAction(true);
     try {
       await axios.put(
@@ -68,7 +68,7 @@ const AdminSubjects = () => {
       setLoadingAction(false);
     }
   };
-  
+
 
   const handleSubmit = async (values) => {
     setLoadingAction(true);
@@ -126,20 +126,29 @@ const AdminSubjects = () => {
       onHeaderCell: () => ({ style: { backgroundColor: '#2C3E50', color: 'white' } }),
       render: (_, record) => (
         <>
-        <Button type="link" onClick={() => handleView(record)} icon={<EyeOutlined />}>View</Button>
-          <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined />}>
-            Edit
-          </Button>
           <Button
-            type="link"
+            type="text"
+            icon={<DeleteOutlined style={{ color: "red" }} />}
             onClick={() => handleDelete(record.subject_code)}
-            icon={loadingAction ? <LoadingOutlined /> : <DeleteOutlined />}
-            style={{ color: 'red' }}
-            disabled={loadingAction}
-          >
-            {loadingAction ? 'Deleting...' : 'Delete'}
-          </Button>
+          />
+
+          {/* <EditOutlined style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }} onClick={() => handleEditStudent(record)} /> */}
+
+
+          <EditOutlined
+            style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }}
+            onClick={() => handleEdit(record)} icon={<EditOutlined />}
+          />
+
+          <Button
+            type="text"
+            icon={<EyeOutlined style={{ color: "yellow" }} />}
+            onClick={() => handleView(record)} icon={<EyeOutlined />}
+          
+
         </>
+          
+        
       ),
     },
   ];
@@ -229,37 +238,37 @@ const AdminSubjects = () => {
         </Form>
       </Modal>
       {/* Edit Subject Modal */}
-<Modal title="Edit Subject" open={editModal} onCancel={() => setEditModal(false)} footer={null}>
-  <Form form={editForm} onFinish={handleUpdate} layout="vertical">
-    {/* Subject Code */}
-    <Form.Item label="Subject Code" name="subject_code" rules={[{ required: true, message: 'Please enter subject code' }]}>
-      <Input placeholder="Enter Subject Code" />
-    </Form.Item>
+      <Modal title="Edit Subject" open={editModal} onCancel={() => setEditModal(false)} footer={null}>
+        <Form form={editForm} onFinish={handleUpdate} layout="vertical">
+          {/* Subject Code */}
+          <Form.Item label="Subject Code" name="subject_code" rules={[{ required: true, message: 'Please enter subject code' }]}>
+            <Input placeholder="Enter Subject Code" />
+          </Form.Item>
 
-    {/* Subject Name */}
-    <Form.Item label="Subject Name" name="subject_name" rules={[{ required: true, message: 'Please select a subject' }]}>
-      <Select placeholder="Select Subject">
-        {[
-          "English", "Environmental Studies", "Mathematics", "Mother Tongue",
-          "Computer Basics", "Science", "Social Studies", "Computer Applications",
-          "General Awareness", "Language Skills", "Mathematics Basics",
-          "Numbers and Shapes", "Rhymes and Stories"
-        ].map(subject => (
-          <Select.Option key={subject} value={subject}>{subject}</Select.Option>
-        ))}
-      </Select>
-    </Form.Item>
+          {/* Subject Name */}
+          <Form.Item label="Subject Name" name="subject_name" rules={[{ required: true, message: 'Please select a subject' }]}>
+            <Select placeholder="Select Subject">
+              {[
+                "English", "Environmental Studies", "Mathematics", "Mother Tongue",
+                "Computer Basics", "Science", "Social Studies", "Computer Applications",
+                "General Awareness", "Language Skills", "Mathematics Basics",
+                "Numbers and Shapes", "Rhymes and Stories"
+              ].map(subject => (
+                <Select.Option key={subject} value={subject}>{subject}</Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-    {/* Submit Button */}
-    <Form.Item>
-      <Button type="primary" htmlType="submit" loading={loadingAction}>
-        Update
-      </Button>
-    </Form.Item>
-  </Form>
-</Modal>
-{/* View Subject Modal */}
-<Modal
+          {/* Submit Button */}
+          <Form.Item>
+            <Button type="primary" htmlType="submit" loading={loadingAction}>
+              Update
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+      {/* View Subject Modal */}
+      <Modal
         title="Subject Details"
         open={viewModal}
         onCancel={() => setViewModal(false)}
