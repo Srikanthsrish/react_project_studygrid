@@ -126,8 +126,8 @@ const AdminAddStudent = () => {
     return (
         <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h1 style={{ color: '#2C3E50' ,fontSize: 'clamp(18px, 4vw, 28px)'}}>Student Management</h1>
-                <h2 style={{ color: '#2C3E50',fontSize: 'clamp(16px, 3vw, 24px)' }}>Total Students: {students.length}</h2>
+                <h1 style={{ color: '#2C3E50' , width: screens.xs ? '100%' : '250px', marginBottom: '20px'}}>Student Management</h1>
+                <h2 style={{ color: '#2C3E50', width: screens.xs ? '100%' : '250px', marginBottom: '20px' }}>Total Students: {students.length}</h2>
             </div>
             
 
