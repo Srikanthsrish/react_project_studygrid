@@ -86,7 +86,7 @@ const AdminNotices = () => {
   return (
     <div style={{ padding: "20px", backgroundColor: "#EAF2F8", borderRadius: 10 }}>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',flexWrap:"wrap" }}>
         <h1 style={{ color: '#2C3E50' }}>Announcements</h1>
         <Button
         icon={<PlusOutlined />}
