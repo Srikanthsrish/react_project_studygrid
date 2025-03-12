@@ -230,7 +230,7 @@ const AdminNotices = () => {
             onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })}
           />
           <Table.Column
-            title="Created At"
+            title="Date of Announcement"
             dataIndex="created_at"
             key="created_at"
             render={(text) => new Date(text).toLocaleString()}

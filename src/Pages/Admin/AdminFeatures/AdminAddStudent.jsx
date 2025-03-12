@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button,Space,Form, Input, Modal, message, Grid, Spin, Select } from 'antd';
+import { Table, Button, Space, Form, Input, Modal, message, Grid, Spin, Select } from 'antd';
 import { DeleteOutlined, PlusOutlined, LoadingOutlined, SearchOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
@@ -125,11 +125,23 @@ const AdminAddStudent = () => {
 
     return (
         <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',flexWrap: 'wrap' }}>
-                <h1 style={{ color: '#2C3E50' , width: screens.xs ? '100%' : '250px', marginBottom: '20px'}}>Student Management</h1>
-                <h2 style={{ color: '#2C3E50', width: screens.xs ? '100%' : '250px', marginBottom: '20px' }}>Total Students: {students.length}</h2>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    padding: '10px',
+                }}
+            >
+                <h1 style={{ flex: '1 1 50%', minWidth: '200px' }}>Student Management</h1>
+                <h2 style={{ flex: '1 1 50%', textAlign: 'right', minWidth: '200px' }}>
+                    Total Students: {students.length}
+                </h2>
             </div>
-            
+
+
+
 
             <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Input
@@ -240,9 +252,9 @@ const AdminAddStudent = () => {
             </Modal>
 
             {loadingData ? (
-                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                 <Spin indicator={<LoadingOutlined style={{ fontSize: 36 }} spin />} />
-               </div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                    <Spin indicator={<LoadingOutlined style={{ fontSize: 36 }} spin />} />
+                </div>
             ) : (
                 <Table
                     dataSource={filteredStudents}
@@ -296,28 +308,28 @@ const AdminAddStudent = () => {
                         })}
                         render={(_, record) => (
                             <>
-                            <Space size="middle">
-                                <Button
-                                    type="text"
-                                    icon={<DeleteOutlined style={{ color: "red" }} />}
-                                    onClick={() => handleDeleteStudent(record._id)}
-                                />
+                                <Space size="middle">
+                                    <Button
+                                        type="text"
+                                        icon={<DeleteOutlined style={{ color: "red" }} />}
+                                        onClick={() => handleDeleteStudent(record._id)}
+                                    />
 
-                                {/* <EditOutlined style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }} onClick={() => handleEditStudent(record)} /> */}
-                                
-                                
-                                <EditOutlined
-                                    style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }}
-                                    onClick={() => handleEditStudent(record)}
-                                />
-                               
+                                    {/* <EditOutlined style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }} onClick={() => handleEditStudent(record)} /> */}
 
-                                <Button
-                                    type="text"
-                                    icon={<EyeOutlined style={{ color: "yellow" }} />}
-                                    onClick={() => handleViewStudent(record)}
-                                />
-                            </Space>
+
+                                    <EditOutlined
+                                        style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }}
+                                        onClick={() => handleEditStudent(record)}
+                                    />
+
+
+                                    <Button
+                                        type="text"
+                                        icon={<EyeOutlined style={{ color: "yellow" }} />}
+                                        onClick={() => handleViewStudent(record)}
+                                    />
+                                </Space>
 
                             </>
                         )}

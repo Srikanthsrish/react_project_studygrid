@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Table, Typography, Spin, Alert, Button, Grid } from "antd";
-import { ReloadOutlined } from "@ant-design/icons";
+import { Table, Typography,Upload, Spin, Button, Grid } from "antd";
+import {UploadOutlined } from "@ant-design/icons";
 import {  ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "antd/dist/reset.css";
@@ -15,6 +15,7 @@ const StudentAssignments = () => {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const screens = useBreakpoint(); // Accessing screen breakpoints for responsiveness
 
   const fetchAssignments = () => {
@@ -37,6 +38,27 @@ const StudentAssignments = () => {
         toast.error("Failed to load assignments.");
       })
       .finally(() => setLoading(false));
+  };
+   // ✅ Handle File Upload for Each Assignment
+   const handleFileUpload = async (file, record) => {
+    const formData = new FormData();
+    formData.append("assignment_file", file); // ✅ Append the file
+    formData.append("assignment_id", record.assignment_id); // ✅ Unique Assignment ID
+
+    try {
+      setUploading(true);
+      const response = await axios.post(
+        "http://localhost:5000/students/assignments",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      console.log("File Uploaded Successfully", response.data);
+    } catch (error) {
+      console.error("File Upload Failed", error);
+    } finally {
+      setUploading(false);
+    }
   };
 
   useEffect(() => {
@@ -62,7 +84,7 @@ const StudentAssignments = () => {
 
       {loading ? (
         <Spin size="large" style={{ display: "block", margin: "auto" }} />
-      ) : (
+      ) : (<div style={{ overflowX: "auto", overflow: "hidden" }}>
         <Table
           columns={[
             {
@@ -82,6 +104,23 @@ const StudentAssignments = () => {
               dataIndex: "assignment",
               key: "assignment",
               ellipsis: true,
+            },
+            {
+              title: "Upload File",
+              key: "upload",
+              render: (_, record) => (
+                <Upload
+                  beforeUpload={(file) => {
+                    handleFileUpload(file, record);
+                    return false; // Prevent auto upload
+                  }}
+                  showUploadList={false}
+                >
+                  <Button icon={<UploadOutlined />} loading={uploading}>
+                    Upload
+                  </Button>
+                </Upload>
+              ),
             },
           ]}
           dataSource={assignments}
@@ -104,13 +143,15 @@ const StudentAssignments = () => {
                     color: "white",
                     padding: "12px",
                     fontSize: "16px",
-                   
                   }}
                 />
               ),
             },
           }}
         />
+      </div>
+      
+              
       )}
 
       <ToastContainer position="top-right" autoClose={3000} />

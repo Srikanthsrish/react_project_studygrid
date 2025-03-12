@@ -123,7 +123,7 @@ const Complaints = () => {
       ),
     },
     {
-      title: 'Created At',
+      title: 'Date of complaint',
       dataIndex: 'created_at',
       key: 'created_at',
       

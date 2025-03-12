@@ -149,9 +149,13 @@ const AdminAddTeachers = () => {
     return (
         <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' ,flexWrap: 'wrap'}}>
-                <h1 style={{ color: '#2C3E50' ,width: screens.xs ? '100%' : '250px', marginBottom: '20px'}}>Teachers Management</h1>
-                <h2 style={{ color: '#2C3E50' ,width: screens.xs ? '100%' : '250px', marginBottom: '20px'}}>Total Teachers : {teachers.length}</h2>
+            <div style={{ display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    padding: '10px',}}>
+                <h1 style={{ color: '#2C3E50' ,flex: '1 1 50%', minWidth: '200px' }}>Teachers Management</h1>
+                <h2 style={{ color: '#2C3E50' ,flex: '1 1 50%', minWidth: '200px',textAlign: 'right'}}>Total Teachers :<span>{teachers.length}</span></h2>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' ,flexWrap: 'wrap'}}>

@@ -54,43 +54,48 @@ const StudentTimetable = () => {
       ) : error ? (
         <Alert message={error} type="error" showIcon />
       ) : (
-        <Table
-          dataSource={timetable}
-          rowKey="id"
-          bordered
-          pagination={{ pageSize: 5 }}
-          scroll={{ x: screens.xs ? 600 : "auto" }}
-          style={{ backgroundColor: "#FFFFFF", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", borderRadius: "8px" }}
-        >
-          <Table.Column 
-            title="Day" 
-            dataIndex="day" 
-            key="day" 
-            sorter={(a, b) => a.day.localeCompare(b.day)
-              
-            }
-            onHeaderCell={() => ({
-              style: { backgroundColor: "#2C3E50", color: "white" },
-            })}
-          />
-          <Table.Column 
-            title="Period" 
-            dataIndex="period" 
-            key="period" 
-            sorter={(a, b) => a.period - b.period}
-            onHeaderCell={() => ({
-              style: { backgroundColor: "#2C3E50", color: "white" },
-            })}
-          />
-          <Table.Column 
-            title="Subject Details" 
-            dataIndex="subject_details" 
-            key="subject_details"
-            onHeaderCell={() => ({
-              style: { backgroundColor: "#2C3E50", color: "white" },
-            })}
-          />
-        </Table>
+        <div style={{ overflowX: "auto", overflow: "hidden" }}>
+  <Table
+    dataSource={timetable}
+    rowKey="id"
+    bordered
+    pagination={{ pageSize: 5 }}
+    scroll={{ x: screens.xs ? 600 : "auto" }}
+    style={{
+      backgroundColor: "#FFFFFF",
+      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+      borderRadius: "8px",
+    }}
+  >
+    <Table.Column
+      title="Day"
+      dataIndex="day"
+      key="day"
+      sorter={(a, b) => a.day.localeCompare(b.day)}
+      onHeaderCell={() => ({
+        style: { backgroundColor: "#2C3E50", color: "white" },
+      })}
+    />
+    <Table.Column
+      title="Period"
+      dataIndex="period"
+      key="period"
+      sorter={(a, b) => a.period - b.period}
+      onHeaderCell={() => ({
+        style: { backgroundColor: "#2C3E50", color: "white" },
+      })}
+    />
+    <Table.Column
+      title="Subject Details"
+      dataIndex="subject_details"
+      key="subject_details"
+      onHeaderCell={() => ({
+        style: { backgroundColor: "#2C3E50", color: "white" },
+      })}
+    />
+  </Table>
+</div>
+
       )}
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
