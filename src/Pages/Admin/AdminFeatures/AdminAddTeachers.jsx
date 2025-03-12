@@ -149,25 +149,25 @@ const AdminAddTeachers = () => {
     return (
         <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h1 style={{ color: '#2C3E50' }}>Teachers Management</h1>
-                <h2 style={{ color: '#2C3E50' }}>Total Teachers : {teachers.length}</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' ,flexWrap: 'wrap'}}>
+                <h1 style={{ color: '#2C3E50' ,width: screens.xs ? '100%' : '250px', marginBottom: '20px'}}>Teachers Management</h1>
+                <h2 style={{ color: '#2C3E50' ,width: screens.xs ? '100%' : '250px', marginBottom: '20px'}}>Total Teachers : {teachers.length}</h2>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' ,flexWrap: 'wrap'}}>
 
                 <Input
                     placeholder="Search Teachers"
                     prefix={<SearchOutlined />}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ maxWidth: '300px' }}
+                    style={{ maxWidth: '300px',width: screens.xs ? '100%' : '250px', marginBottom: '20px' }}
                 />
                 <Button
                     type="primary"
                     icon={<PlusOutlined />}
                     onClick={() => setIsModalVisible(true)}
-                    style={{ backgroundColor: '#2C3E50' }}
+                    style={{ backgroundColor: '#2C3E50',width: screens.xs ? '100%' : '250px', marginBottom: '20px' }}
                 >
                     Add Teacher
                 </Button>
@@ -269,7 +269,7 @@ const AdminAddTeachers = () => {
                     rowKey="teacherId"
                     bordered
                     pagination={{ pageSize: 5 }}
-                    style={{ backgroundColor: '#EAF2F8', marginTop: '20px' }}
+                    style={{ backgroundColor: '#EAF2F8', marginTop: '20px',overflow:"hidden",overflowX:"scroll" }}
                 >
                     {/* <Table.Column title="Teacher ID" dataIndex="teacherId" key="teacherId" align="center"
                      onHeaderCell={() => ({

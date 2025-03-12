@@ -198,7 +198,9 @@ const TeacherTimetable = () => {
             columns={columns}
             dataSource={timetable}
             rowKey="id"
-            bordered
+            overflow="hidden"
+            overflowX="scroll"
+
             pagination={{ pageSize: 5 }}
             style={{ marginTop: 20 }}
             rowClassName={(record, index) => (index % 2 === 0 ? "table-row-light" : "table-row-dark")}
