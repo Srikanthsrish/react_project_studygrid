@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Button, Form, Input, Table, Spin, message, Modal, Grid, Select } from "antd";
+import { Button, Form, Input, Space, Table, Spin, message, Modal, Grid, Select } from "antd";
 import "antd/dist/reset.css";
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, PlusOutlined, DeleteOutlined, EyeOutlined, EditOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
 const { Option } = Select;
@@ -133,11 +133,15 @@ const TeacherSubjectAllocation = () => {
 
         <Button
           type="primary"
+          icon={<PlusOutlined />}
           onClick={() => setShowForm(true)}
           style={{ marginBottom: "20px", backgroundColor: '#2C3E50', width: screens.xs ? '100%' : 'auto' }}
+
         >
           Add Allocation
         </Button>
+
+
       </div>
       <Modal
         title="Add New Allocation"
@@ -276,16 +280,24 @@ const TeacherSubjectAllocation = () => {
             key="actions"
             onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })}
             render={(_, record) => (
+
               <>
-                <Button type="default" onClick={() => handleEdit(record)} style={{ marginRight: "10px" }}>
-                  Edit
-                </Button>
-                <Button type="default" danger onClick={() => handleDelete(record.teacher_id)}>
-                  Delete
-                </Button>
-                <Button type="primary" onClick={() => handleView(record)}>
-                  View
-                </Button>
+                 <Space size="middle">
+                <Button type="text" icon={<DeleteOutlined style={{ color: "red" }} />}
+                  onClick={() => handleEdit(record)} style={{ marginRight: "10px" }} />
+
+                
+                <EditOutlined
+                  style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }}
+                  onClick={() => handleDelete(record.teacher_id)}
+                />
+                
+
+
+                <Button type="text"
+                  icon={<EyeOutlined style={{ color: "yellow" }} />} onClick={() => handleView(record)} />
+                
+                </Space>
               </>
             )}
           />

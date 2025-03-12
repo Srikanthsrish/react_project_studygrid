@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Form, Input, Modal, message, Grid, Spin, Select } from 'antd';
+import { Table, Button,Space,Form, Input, Modal, message, Grid, Spin, Select } from 'antd';
 import { DeleteOutlined, PlusOutlined, LoadingOutlined, SearchOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
@@ -239,7 +239,9 @@ const AdminAddStudent = () => {
             </Modal>
 
             {loadingData ? (
-                <Spin indicator={<LoadingOutlined style={{ fontSize: 36 }} spin />} />
+                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                 <Spin indicator={<LoadingOutlined style={{ fontSize: 36 }} spin />} />
+               </div>
             ) : (
                 <Table
                     dataSource={filteredStudents}
@@ -248,7 +250,7 @@ const AdminAddStudent = () => {
                     pagination={{ pageSize: 5 }}
                     scroll={{ x: screens.xs ? 600 : 'auto' }}
                 >
-                    <Table.Column
+                    {/* <Table.Column
                         title="Index"
                         dataIndex="index"
                         key="index"
@@ -257,7 +259,7 @@ const AdminAddStudent = () => {
                         onHeaderCell={() => ({
                             style: { backgroundColor: '#2C3E50', color: 'white' },
                         })}
-                    />
+                    /> */}
                     <Table.Column
                         title="Full Name"
                         dataIndex="fullName"
@@ -293,6 +295,7 @@ const AdminAddStudent = () => {
                         })}
                         render={(_, record) => (
                             <>
+                            <Space size="middle">
                                 <Button
                                     type="text"
                                     icon={<DeleteOutlined style={{ color: "red" }} />}
@@ -301,17 +304,19 @@ const AdminAddStudent = () => {
 
                                 {/* <EditOutlined style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }} onClick={() => handleEditStudent(record)} /> */}
                                 
-
+                                
                                 <EditOutlined
                                     style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }}
                                     onClick={() => handleEditStudent(record)}
                                 />
+                               
 
                                 <Button
                                     type="text"
                                     icon={<EyeOutlined style={{ color: "yellow" }} />}
                                     onClick={() => handleViewStudent(record)}
                                 />
+                            </Space>
 
                             </>
                         )}

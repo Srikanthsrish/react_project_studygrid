@@ -15,7 +15,7 @@ const Landing = () => {
   const handleLoginClick = () => {
     setLoading(true); // Show loading icon
     setTimeout(() => {
-      navigate('/login');
+      navigate('/role/login');
     }, 1000);
   };
 

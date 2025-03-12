@@ -20,11 +20,12 @@ const Login = () => {
     }, 1200);
   };
 
-  const handleGuestLogin = () => {
-    setLoading("guest");
+  const handleGuestLogin = (role) => {
+    setLoading(`guest-${role}`);
     message.loading({ content: "Redirecting...", duration: 1 });
     setTimeout(() => {
-      navigate("/admin/dashboard/guest");
+      const guestPath = role === "student" ? "/student/dashboard/guest/guest" : `/${role}/dashboard/guest`;
+      navigate(guestPath);
       setLoading(null);
     }, 1200);
   };
@@ -44,7 +45,7 @@ const Login = () => {
               Login
             </Button>
             <Button type="primary" style={{ ...styles.button }} 
-              onClick={handleGuestLogin} disabled={loading}>
+              onClick={() => handleGuestLogin("admin")} disabled={loading}>
               Guest Login
             </Button>
           </div>
@@ -59,6 +60,9 @@ const Login = () => {
             <Button type="primary" style={styles.button} onClick={() => handleLoginClick("student")} disabled={loading}>
               Login
             </Button>
+            <Button type="primary" style={styles.button} onClick={() => handleGuestLogin("student")} disabled={loading}>
+              Guest Login
+            </Button>
           </div>
         </Card>
 
@@ -70,6 +74,9 @@ const Login = () => {
           <div style={styles.buttonContainer}>
             <Button type="primary" style={styles.button} onClick={() => handleLoginClick("teacher")} disabled={loading}>
               Login
+            </Button>
+            <Button type="primary" style={styles.button} onClick={() => handleGuestLogin("teacher")} disabled={loading}>
+              Guest Login
             </Button>
           </div>
         </Card>
@@ -84,8 +91,8 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    minHeight: "100vh", // Ensures full coverage even on scrolling
-    width: "100%", // Covers full width
+    minHeight: "100vh",
+    width: "100%",
     backgroundColor: "#EAF2F8",
     padding: "20px",
     textAlign: "center",

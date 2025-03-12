@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Table, Typography, Spin, Alert, Button, Grid } from "antd";
@@ -16,47 +16,38 @@ const StudentTimetable = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const screens = useBreakpoint();
+  const hasFetched = useRef(false); // Prevents duplicate API calls in Strict Mode
 
-  const fetchTimetable = async () => {
+  const fetchTimetable = async (showToast = true) => {
     setLoading(true);
     try {
       const response = await axios.get(`https://studygrid-backendmongo.onrender.com/timetable/${className}`);
       setTimetable(response.data);
       setError("");
-      toast.success("Timetable loaded successfully!");
+
+      if (showToast) toast.success("Timetable loaded successfully!");
     } catch (err) {
       setError("Failed to load timetable.");
-      toast.error("Error fetching timetable.");
+      if (showToast) toast.error("Error fetching timetable.");
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchTimetable();
+    if (!hasFetched.current) {
+      fetchTimetable(false); // Prevents toast message on initial load
+      hasFetched.current = true;
+    }
   }, [className]);
 
   return (
     <div style={{ padding: "2rem", backgroundColor: "#EAF2F8", minHeight: "100vh" }}>
-      <Title level={2} style={{ color: "#2C3E50", textAlign: "center" }}>
+      
+      <Title level={2} style={{ color: "#2C3E50",marginBottom:"20px" }}>
         Timetable for Class {className}
       </Title>
 
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem" }}>
-      <Button 
-  type="primary" 
-  icon={<ReloadOutlined />} 
-  onClick={fetchTimetable} 
-  style={{ 
-    backgroundColor: "#2C3E50", 
-    color: "white", 
-    border: "none", 
-    fontWeight: "bold" 
-  }}
->
-  Refresh Timetable
-</Button>
-
-      </div>
+      
 
       {loading ? (
         <Spin size="large" style={{ display: "block", margin: "auto" }} />
@@ -68,14 +59,16 @@ const StudentTimetable = () => {
           rowKey="id"
           bordered
           pagination={{ pageSize: 5 }}
-          scroll={{ x: screens.xs ? 600 : 'auto' }}
+          scroll={{ x: screens.xs ? 600 : "auto" }}
           style={{ backgroundColor: "#FFFFFF", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", borderRadius: "8px" }}
         >
           <Table.Column 
             title="Day" 
             dataIndex="day" 
             key="day" 
-            sorter={(a, b) => a.day.localeCompare(b.day)}
+            sorter={(a, b) => a.day.localeCompare(b.day)
+              
+            }
             onHeaderCell={() => ({
               style: { backgroundColor: "#2C3E50", color: "white" },
             })}
@@ -105,4 +98,3 @@ const StudentTimetable = () => {
 };
 
 export default StudentTimetable;
-

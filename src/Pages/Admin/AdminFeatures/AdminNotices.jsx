@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Button,
-  Form,
-  Input,
-  Select,
-  Table,
-  Modal,
-  Spin,
-  message,
-  Grid,
-} from "antd";
-import { ExclamationCircleOutlined ,EditOutlined} from "@ant-design/icons";
+import { Button, Form, Input, Space, Select, Table, Modal, Spin, message, Grid, } from "antd";
+import { ExclamationCircleOutlined, EditOutlined, DeleteOutlined,PlusOutlined } from "@ant-design/icons";
 import "antd/dist/reset.css";
 
 const { Option } = Select;
@@ -95,19 +85,25 @@ const AdminNotices = () => {
 
   return (
     <div style={{ padding: "20px", backgroundColor: "#EAF2F8", borderRadius: 10 }}>
-      <h2 style={{ color: "#2C3E50" }}>Announcements</h2>
-      <Button
-        type="primary"
-        onClick={() => setShowFormModal(true)}
-        style={{
-          marginBottom: "20px",
-          backgroundColor: "#2C3E50",
-          borderColor: "#2C3E50",
-          width: screens.xs ? "100%" : "auto",
-        }}
-      >
-        Add Notice
-      </Button>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1 style={{ color: '#2C3E50' }}>Announcements</h1>
+        <Button
+        icon={<PlusOutlined />}
+          type="primary"
+          onClick={() => setShowFormModal(true)}
+          style={{
+            marginBottom: "20px",
+            backgroundColor: "#2C3E50",
+            borderColor: "#2C3E50",
+            width: screens.xs ? "100%" : "auto",
+          }}
+        >
+          Add Notice
+        </Button>
+
+      </div>
+
 
       {/* Modal for adding notice */}
       <Modal
@@ -205,7 +201,9 @@ const AdminNotices = () => {
       </Modal>
 
       {loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <Spin size="large" />
+        </div>
       ) : (
         <Table
           dataSource={notices}
@@ -213,52 +211,56 @@ const AdminNotices = () => {
           bordered
           scroll={{ x: screens.xs ? 600 : "auto" }}
         >
-          <Table.Column 
-            title="Audience" 
-            dataIndex="audience" 
-            key="audience" 
-            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })} 
+          <Table.Column
+            title="Audience"
+            dataIndex="audience"
+            key="audience"
+            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })}
           />
-          <Table.Column 
-            title="Title" 
-            dataIndex="title" 
-            key="title" 
-            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })} 
+          <Table.Column
+            title="Title"
+            dataIndex="title"
+            key="title"
+            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })}
           />
-          <Table.Column 
-            title="Description" 
-            dataIndex="description" 
-            key="description" 
-            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })} 
+          <Table.Column
+            title="Description"
+            dataIndex="description"
+            key="description"
+            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })}
           />
-          <Table.Column 
-            title="Created At" 
-            dataIndex="created_at" 
-            key="created_at" 
-            render={(text) => new Date(text).toLocaleString()} 
-            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })} 
+          <Table.Column
+            title="Created At"
+            dataIndex="created_at"
+            key="created_at"
+            render={(text) => new Date(text).toLocaleString()}
+            onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })}
           />
           <Table.Column
             title="Actions"
             key="actions"
             onHeaderCell={() => ({ style: { backgroundColor: "#2C3E50", color: "white" } })}
             render={(_, record) => (
-              <><Button
-              icon={<EditOutlined />}
-              onClick={() => {
-                setSelectedNotice(record);
-                setShowEditModal(true);
-              }}
-              style={{ marginRight: 8 }}
-            >
-              Edit
-            </Button>
-              <Button danger onClick={() => handleDeleteNotice(record._id)}>
-                Delete
-              </Button>
-              
-                
-                </>
+
+
+              <>
+                <Space size="middle">
+                  <EditOutlined
+                    style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }}
+                    onClick={() => {
+                      setSelectedNotice(record);
+                      setShowEditModal(true);
+                    }}
+                  />
+                  <Button
+                    type="text"
+                    icon={<DeleteOutlined style={{ color: "red" }} />}
+                    onClick={() => handleDeleteNotice(record._id)}
+                  />
+                </Space>
+
+
+              </>
             )}
           />
         </Table>

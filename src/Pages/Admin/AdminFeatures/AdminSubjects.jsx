@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Input, Select, Table, Form, message, Modal, Spin, Grid } from 'antd';
+import { Button, Input,Space, Select, Table, Form, message, Modal, Spin, Grid } from 'antd';
 import { ToastContainer, toast } from 'react-toastify';
 import { PlusOutlined, DeleteOutlined, LoadingOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import 'react-toastify/dist/ReactToastify.css';
-
 const { Option } = Select;
 const { useBreakpoint } = Grid;
-
-
 const AdminSubjects = () => {
-
+  const [selectedClass, setSelectedClass] = useState('1st');
   const [showModal, setShowModal] = useState(false);
-  const [selectedClass, setSelectedClass] = useState('');
+  
   const [editModal, setEditModal] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
   const [viewModal, setViewModal] = useState(false);
@@ -23,7 +20,9 @@ const AdminSubjects = () => {
   const screens = useBreakpoint();
   const [form] = Form.useForm();
   const [editForm] = Form.useForm();
-
+  useEffect(() => {
+    fetchSubjects(); // Fetch subjects when component mounts
+  }, []);
 
   const fetchSubjects = async () => {
     if (!selectedClass) {
@@ -109,50 +108,50 @@ const AdminSubjects = () => {
 
   const columns = [
     {
-      title: 'Subject Code',
-      dataIndex: 'subject_code',
-      key: 'subject_code',
-      onHeaderCell: () => ({ style: { backgroundColor: '#2C3E50', color: 'white' } })
+      title: "Subject Code",
+      dataIndex: "subject_code",
+      key: "subject_code",
+      onHeaderCell: () => ({
+        style: { backgroundColor: "#2C3E50", color: "white" },
+      }),
     },
     {
-      title: 'Subject Name',
-      dataIndex: 'subject_name',
-      key: 'subject_name',
-      onHeaderCell: () => ({ style: { backgroundColor: '#2C3E50', color: 'white' } })
+      title: "Subject Name",
+      dataIndex: "subject_name",
+      key: "subject_name",
+      onHeaderCell: () => ({
+        style: { backgroundColor: "#2C3E50", color: "white" },
+      }),
     },
     {
-      title: 'Action',
-      key: 'action',
-      onHeaderCell: () => ({ style: { backgroundColor: '#2C3E50', color: 'white' } }),
+      title: "Action",
+      key: "action",
+      onHeaderCell: () => ({
+        style: { backgroundColor: "#2C3E50", color: "white" },
+      }),
       render: (_, record) => (
         <>
+        <Space size="middle">
           <Button
             type="text"
             icon={<DeleteOutlined style={{ color: "red" }} />}
             onClick={() => handleDelete(record.subject_code)}
           />
-
-          {/* <EditOutlined style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }} onClick={() => handleEditStudent(record)} /> */}
-
-
-          <EditOutlined
-            style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }}
-            onClick={() => handleEdit(record)} icon={<EditOutlined />}
+          <Button
+            type="text"
+            icon={<EditOutlined style={{ color: "#28A745" }} />}
+            onClick={() => handleEdit(record)}
           />
-
           <Button
             type="text"
             icon={<EyeOutlined style={{ color: "yellow" }} />}
-            onClick={() => handleView(record)} icon={<EyeOutlined />}
-          
-
+            onClick={() => handleUpdate(record)}
+          />
+          </Space>
         </>
-          
-        
       ),
     },
   ];
-
 
   return (
     <div style={{ backgroundColor: '#EAF2F8', padding: '20px' }}>
@@ -288,13 +287,16 @@ const AdminSubjects = () => {
       {/* Class Selection and Fetching Subjects */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
+          
           <Select
             onChange={setSelectedClass}
             value={selectedClass || undefined}
             placeholder="Select class"
             style={{
               width: 200,
-              marginBottom: '20px',
+              marginBottom: '10px',
+              marginRight:"10px"
+              
             }}
 
           >
@@ -315,6 +317,7 @@ const AdminSubjects = () => {
           >
             Fetch Subjects
           </Button>
+          
         </div>
         {/* Add New Subject Button */}
         <Button
@@ -334,6 +337,7 @@ const AdminSubjects = () => {
       </div>
 
       {/* Subjects Table */}
+      
       <Spin spinning={loading} tip="Loading...">
         <Table
           columns={columns}
@@ -354,7 +358,3 @@ const AdminSubjects = () => {
 };
 
 export default AdminSubjects;
-
-
-
-

@@ -1,194 +1,194 @@
 // import React, { useState, useEffect } from "react";
 // import { useParams } from "react-router-dom";
-// import { Card, Spin, Avatar } from "antd";
+// import axios from "axios";
+// import { Card, Spin, Typography, Descriptions, Button } from "antd";
+// import { LoadingOutlined, ReloadOutlined } from "@ant-design/icons";
 // import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
-// import { UserOutlined } from "@ant-design/icons";
+
+// const { Title } = Typography;
 
 // const StudentProfile = () => {
 //   const { fullName } = useParams();
 //   const [profileData, setProfileData] = useState(null);
-//   const [loading, setLoading] = useState(true);
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState(null);
+
+//   const fetchProfileData = async () => {
+//     setLoading(true);
+//     setError(null);
+    
+//     try {
+//       const response = await axios.get(
+//         `https://studygrid-backendmongo.onrender.com/students/profile/${encodeURIComponent(fullName)}`
+//       );
+//       setProfileData(response.data);
+//     } catch (err) {
+//       setError(err.response?.data?.message || "Failed to fetch student profile");
+//       toast.error("Unable to load profile. Please try again later.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
 //   useEffect(() => {
-//     const fetchProfileData = async () => {
-//       try {
-//         const response = await fetch(`https://studygrid-backendmongo.onrender.com/students/profile/${fullName}`);
-
-//         if (!response.ok) {
-//           throw new Error("Profile not found");
-//         }
-
-//         const data = await response.json();
-//         setProfileData(data);
-//       } catch (error) {
-//         console.error("Error fetching profile:", error);
-//         toast.error("Unable to load profile. Please try again later.");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchProfileData();
+//     if (fullName) fetchProfileData();
 //   }, [fullName]);
 
 //   if (loading) {
-//     return <Spin size="large" tip="Loading Profile..." style={styles.spinner} />;
+//     return <Spin indicator={<LoadingOutlined style={{ fontSize: 50 }} spin />} />;
 //   }
 
-//   if (!profileData) {
-//     return <p style={styles.errorMessage}>Profile not found.</p>;
+//   if (error) {
+//     return (
+//       <div style={{ textAlign: "center", color: "red" }}>
+//         <Title level={3}>{error}</Title>
+//         <Button type="primary" icon={<ReloadOutlined />} onClick={fetchProfileData}>
+//           Retry
+//         </Button>
+//       </div>
+//     );
 //   }
 
 //   return (
-//     <div style={styles.container}>
-//       <h1 style={styles.header}>Student Profile</h1>
-//       <Card style={styles.profileCard}>
-//         <div style={styles.avatarContainer}>
-//           <Avatar size={100} icon={<UserOutlined />} />
-//         </div>
-//         <div style={styles.infoContainer}>
-//           <p><strong>Full Name:</strong> {profileData.fullName}</p>
-//           <p><strong>Class:</strong> {profileData.class || "N/A"}</p>
-//           <p><strong>Email:</strong> {profileData.email || "N/A"}</p>
-//           <p><strong>Phone:</strong> {profileData.phone || "N/A"}</p>
-//         </div>
-//       </Card>
+//     <Card
+//       style={{
+//         maxWidth: 600,
+//         margin: "auto",
+//         padding: 20,
+//         background: "#EAF2F8",
+//         border: "1px solid #2C3E50",
+//         borderRadius: 10,
+//         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+//       }}
+//     >
+//       <Title level={2} style={{ color: "#2C3E50", textAlign: "center" }}>Student Profile</Title>
+
+//       {profileData && (
+//         <Descriptions bordered column={1} size="middle" style={{ marginTop: 20 }}>
+//           <Descriptions.Item label="Student Name" labelStyle={{ fontWeight: "bold", color: "#2C3E50" }}>
+//             {profileData.fullName}
+//           </Descriptions.Item>
+//           <Descriptions.Item label="Class" labelStyle={{ fontWeight: "bold", color: "#2C3E50" }}>
+//             {profileData.class || "N/A"}
+//           </Descriptions.Item>
+//           <Descriptions.Item label="Email" labelStyle={{ fontWeight: "bold", color: "#2C3E50" }}>
+//             {profileData.email || "N/A"}
+//           </Descriptions.Item>
+//         </Descriptions>
+//       )}
+
 //       <ToastContainer />
-//     </div>
+//     </Card>
 //   );
 // };
 
-// const styles = {
-//   container: {
-//     padding: "20px",
-//     fontFamily: "Arial, sans-serif",
-//     maxWidth: "600px",
-//     margin: "0 auto",
-//     backgroundColor: "#EAF2F8",
-//     borderRadius: "8px",
-//     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-//   },
-//   header: {
-//     textAlign: "center",
-//     color: "#2C3E50",
-//     marginBottom: "20px",
-//   },
-//   profileCard: {
-//     backgroundColor: "#fff",
-//     borderRadius: "8px",
-//     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-//     padding: "20px",
-//     textAlign: "center",
-//   },
-//   avatarContainer: {
-//     marginBottom: "20px",
-//   },
-//   infoContainer: {
-//     fontSize: "16px",
-//     lineHeight: "1.5",
-//     color: "#333",
-//     textAlign: "left",
-//   },
-//   errorMessage: {
-//     textAlign: "center",
-//     color: "red",
-//     fontSize: "18px",
-//     fontWeight: "bold",
-//   },
-//   spinner: {
-//     display: "flex",
-//     justifyContent: "center",
-//     alignItems: "center",
-//     height: "100vh",
-//   },
-// };
-
 // export default StudentProfile;
+
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Card, Spin } from "antd";
+import axios from "axios";
+import { Card, Spin, Typography, Descriptions, Button } from "antd";
+import { LoadingOutlined, ReloadOutlined } from "@ant-design/icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+const { Title } = Typography;
 
 const StudentProfile = () => {
   const { fullName } = useParams();
   const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchProfileData = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.get(
+        `https://studygrid-backendmongo.onrender.com/students/profile/${encodeURIComponent(fullName)}`
+      );
+      setProfileData(response.data);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch student profile");
+      toast.error("Unable to load profile. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const response = await fetch(`https://studygrid-backendmongo.onrender.com/students/profile/${fullName}`);
-        if (!response.ok) {
-          throw new Error("Profile not found");
-        }
-        const data = await response.json();
-        setProfileData(data);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-        toast.error("Unable to load profile. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProfileData();
+    if (fullName) fetchProfileData();
   }, [fullName]);
 
   if (loading) {
-    return <Spin size="large" tip="Loading Profile..." style={styles.spinner} />;
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <Spin indicator={<LoadingOutlined style={{ fontSize: 50 }} spin />} />
+      </div>
+    );
   }
 
-  if (!profileData) {
-    return <p style={styles.errorMessage}>Profile not found.</p>;
+  if (error) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          textAlign: "center",
+          color: "red",
+        }}
+      >
+        <Title level={3}>{error}</Title>
+        <Button type="primary" icon={<ReloadOutlined />} onClick={fetchProfileData}>
+          Retry
+        </Button>
+      </div>
+    );
   }
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.header}>Student Profile</h2>
-      <Card style={styles.profileCard}>
-        <p><strong>Name:</strong> {profileData.fullName}</p>
-        <p><strong>Class:</strong> {profileData.class || "N/A"}</p>
-        <p><strong>Email:</strong> {profileData.email || "N/A"}</p>
-      </Card>
-      <ToastContainer />
-    </div>
-  );
-};
+    <Card
+      style={{
+        maxWidth: 600,
+        margin: "auto",
+        padding: 20,
+        background: "#EAF2F8",
+        border: "1px solid #2C3E50",
+        borderRadius: 10,
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <Title level={2} style={{ color: "#2C3E50", textAlign: "center" }}>Student Profile</Title>
 
-const styles = {
-  container: {
-    padding: "20px",
-    fontFamily: "Arial, sans-serif",
-    maxWidth: "400px",
-    margin: "0 auto",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "8px",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-  },
-  header: {
-    textAlign: "center",
-    color: "#333",
-    marginBottom: "15px",
-  },
-  profileCard: {
-    backgroundColor: "#fff",
-    borderRadius: "8px",
-    padding: "15px",
-    textAlign: "left",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-  },
-  errorMessage: {
-    textAlign: "center",
-    color: "red",
-    fontSize: "16px",
-  },
-  spinner: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-  },
+      {profileData && (
+        <Descriptions bordered column={1} size="middle" style={{ marginTop: 20 }}>
+          <Descriptions.Item label="Student Name" labelStyle={{ fontWeight: "bold", color: "#2C3E50" }}>
+            {profileData.fullName}
+          </Descriptions.Item>
+          <Descriptions.Item label="Class" labelStyle={{ fontWeight: "bold", color: "#2C3E50" }}>
+            {profileData.class || "N/A"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Email" labelStyle={{ fontWeight: "bold", color: "#2C3E50" }}>
+            {profileData.email || "N/A"}
+          </Descriptions.Item>
+        </Descriptions>
+      )}
+
+      <ToastContainer />
+    </Card>
+  );
 };
 
 export default StudentProfile;

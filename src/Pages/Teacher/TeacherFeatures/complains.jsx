@@ -62,7 +62,7 @@ const Complaints = () => {
       setFullname('');
       setStatus('pending');
       setModalVisible(false);
-      
+
       const updatedComplaints = await axios.get(`https://studygrid-backendmongo.onrender.com/complaints/${teacherId}`);
       setComplaints(updatedComplaints.data);
     } catch (err) {
@@ -105,18 +105,18 @@ const Complaints = () => {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
-      align: 'center',
+      
       onHeaderCell: () => ({
-        style: { backgroundColor: '#2C3E50', color: 'white', textAlign: 'center' },
+        style: { backgroundColor: '#2C3E50', color: 'white',  },
       }),
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      align: 'center',
+      
       onHeaderCell: () => ({
-        style: { backgroundColor: '#2C3E50', color: 'white', textAlign: 'center' },
+        style: { backgroundColor: '#2C3E50', color: 'white' },
       }),
       render: (status) => (
         <span style={{ color: status === 'resolved' ? 'green' : 'orange' }}>{status}</span>
@@ -126,18 +126,18 @@ const Complaints = () => {
       title: 'Created At',
       dataIndex: 'created_at',
       key: 'created_at',
-      align: 'center',
+      
       onHeaderCell: () => ({
-        style: { backgroundColor: '#2C3E50', color: 'white', textAlign: 'center' },
+        style: { backgroundColor: '#2C3E50', color: 'white',  },
       }),
       render: (text) => <span>{new Date(text).toLocaleString()}</span>,
     },
     {
       title: 'Action',
       key: 'action',
-      align: 'center',
+      
       onHeaderCell: () => ({
-        style: { backgroundColor: '#2C3E50', color: 'white', textAlign: 'center' },
+        style: { backgroundColor: '#2C3E50', color: 'white', },
       }),
       render: (text, record) => (
         <Button danger icon={<DeleteOutlined />} onClick={() => showDeleteConfirm(record._id)}>
@@ -146,16 +146,12 @@ const Complaints = () => {
       ),
     },
   ];
-  
+
 
   return (
-    <div style={{ backgroundColor: '#EAF2F8', padding: '20px', borderRadius: '10px' }}>
-      <h1 style={{ color: '#2C3E50', textAlign: 'center' }}>Complaints for Teacher {teacherId}</h1>
-
-      {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
-
-      {/* Button to toggle modal visibility */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+    <div style={{  padding: '20px', borderRadius: '10px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',marginBottom:"20px" }}>
+        <h2 style={{ color: '#2C3E50'}}>Complaints for Teacher {teacherId}</h2>
         <Button
           type="primary"
           icon={<PlusOutlined />}
@@ -164,7 +160,11 @@ const Complaints = () => {
         >
           Add Complaint
         </Button>
+
       </div>
+
+
+
 
       {/* Modal for adding complaint */}
       <Modal

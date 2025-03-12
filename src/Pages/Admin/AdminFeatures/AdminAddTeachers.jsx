@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Form, Input, Modal, message, Grid, Spin, Select } from 'antd';
+import { Table, Button, Space, Form, Input, Modal, message, Grid, Spin, Select } from 'antd';
 import { DeleteOutlined, PlusOutlined, LoadingOutlined, EditOutlined, SearchOutlined, EyeOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
@@ -39,15 +39,28 @@ const AdminAddTeachers = () => {
 
     const handleAddTeacher = async (values) => {
         setLoadingAction(true);
+    
         try {
-
-
-            const response = await axios.post('https://studygrid-backendmongo.onrender.com/api/teachers', values, {
-                headers: { 'Content-Type': 'application/json' },
-            });
-
+            // Check if email already exists
+            const emailCheckResponse = await axios.get(
+                `https://studygrid-backendmongo.onrender.com/api/teachers/check-email?email=${values.email}`
+            );
+    
+            if (emailCheckResponse.data.exists) {
+                message.error('Email already exists! Please use a different email.');
+                setLoadingAction(false);
+                return;
+            }
+    
+            // Add teacher
+            const response = await axios.post(
+                'https://studygrid-backendmongo.onrender.com/api/teachers',
+                values,
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+    
             console.log("Server Response:", response.data); // Log response
-
+    
             if (response.data && response.data.teacher) {
                 setTeachers(prev => [...prev, response.data.teacher]);
                 message.success('Teacher added successfully!');
@@ -57,19 +70,27 @@ const AdminAddTeachers = () => {
                 message.error('Unexpected response from server');
             }
         } catch (error) {
-
             message.error(error.response?.data?.message || 'Failed to add teacher');
         } finally {
             setLoadingAction(false);
         }
     };
+    
     const handleEditTeacher = async (values) => {
         setLoadingAction(true);
+    
         try {
-            const response = await axios.put(`https://studygrid-backendmongo.onrender.com/api/teachers/${editingTeacher.teacherId}`, values);
+            // Update teacher details
+            const response = await axios.put(
+                `https://studygrid-backendmongo.onrender.com/api/teachers/${editingTeacher.teacherId}`,
+                values
+            );
+    
             if (response.data && response.data.teacher) {
                 setTeachers(prev =>
-                    prev.map(teacher => (teacher.teacherId === editingTeacher.teacherId ? response.data.teacher : teacher))
+                    prev.map(teacher =>
+                        teacher.teacherId === editingTeacher.teacherId ? response.data.teacher : teacher
+                    )
                 );
                 message.success('Teacher updated successfully!');
                 setIsEditModalVisible(false);
@@ -82,6 +103,7 @@ const AdminAddTeachers = () => {
             setLoadingAction(false);
         }
     };
+    
 
     const showEditModal = (teacher) => {
         setEditingTeacher(teacher);
@@ -156,10 +178,21 @@ const AdminAddTeachers = () => {
                 open={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
                 footer={null}
+                afterOpenChange={(visible) => {
+                    if (visible) {
+                        // Generate a random 4-digit number (0000 to 9999)
+                        const randomDigits = String(Math.floor(1000 + Math.random() * 9000)).padStart(4, '0');
+                        const generatedTeacherId = `T${randomDigits}`;
+                        
+                        // Set the generated Teacher ID in the form
+                        form.setFieldsValue({ teacherId: generatedTeacherId });
+                    }
+                }}
+                
             >
                 <Form form={form} layout="vertical" onFinish={handleAddTeacher}>
-                    <Form.Item label="Teacher ID" name="teacherId" rules={[{ required: true, message: 'Please enter Teacher ID' }]}>
-                        <Input placeholder="Enter Teacher ID" />
+                    <Form.Item label="Teacher ID" name="teacherId">
+                        <Input disabled />
                     </Form.Item>
                     <Form.Item label="Full Name" name="name" rules={[{ required: true, message: 'Please enter full name' }]}>
                         <Input placeholder="Enter full name" />
@@ -264,26 +297,26 @@ const AdminAddTeachers = () => {
                         })}
                         render={(_, record) => (
                             <>
-                                <Button
-                                    type="text"
-                                    icon={<DeleteOutlined style={{ color: "red" }} />}
-                                    onClick={() => showDeleteConfirm(record.teacherId)}
-                                />
+                                <Space size="middle">
+                                    <Button
+                                        type="text"
+                                        icon={<DeleteOutlined style={{ color: "red" }} />}
+                                        onClick={() => showDeleteConfirm(record.teacherId)}
+                                    />
 
-                                {/* <EditOutlined style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }} onClick={() => handleEditStudent(record)} /> */}
+                                    <EditOutlined
+                                        style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }}
+                                        onClick={() => showEditModal(record)}
+                                    />
+
+                                    <Button
+                                        type="text"
+                                        icon={<EyeOutlined style={{ color: "yellow" }} />}
+                                        onClick={() => showViewModal(record)}
+                                    />
+                                </Space>
 
 
-                                <EditOutlined
-                                    style={{ color: "#28A745", fontSize: "16px", cursor: "pointer" }}
-                                    onClick={() => showEditModal(record)}
-                                />
-
-                                <Button
-                                    type="text"
-                                    icon={<EyeOutlined style={{ color: "yellow" }} />}
-                                    onClick={() => showViewModal(record)}
-                                />
-                               
                             </>
 
                         )}

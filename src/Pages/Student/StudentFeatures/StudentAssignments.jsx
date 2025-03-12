@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Table, Typography, Spin, Alert, Button, Grid } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
-import { toast, ToastContainer } from "react-toastify";
+import {  ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "antd/dist/reset.css";
 
@@ -52,33 +52,13 @@ const StudentAssignments = () => {
         margin: screens.xs ? "1rem" : "2rem", // Adjust margin for smaller screens
       }}
     >
-      <Title level={2} style={{ color: "#2C3E50", textAlign: "center" }}>
+      <Title level={2} style={{ color: "#2C3E50",marginBottom:"20px" }}>
         Assignments for {className}
       </Title>
 
-      {error && (
-        <Alert
-          message={error}
-          type="error"
-          showIcon
-          style={{ marginBottom: "1rem" }}
-        />
-      )}
+      
 
-      <Button
-        type="primary"
-        icon={<ReloadOutlined />}
-        onClick={fetchAssignments}
-        style={{
-          backgroundColor: "#2C3E50",
-          color: "white",
-          border: "none",
-          fontWeight: "bold",
-          marginBottom: "1rem",
-        }}
-      >
-        Refresh
-      </Button>
+      
 
       {loading ? (
         <Spin size="large" style={{ display: "block", margin: "auto" }} />
@@ -124,7 +104,7 @@ const StudentAssignments = () => {
                     color: "white",
                     padding: "12px",
                     fontSize: "16px",
-                    textAlign: "center",
+                   
                   }}
                 />
               ),
